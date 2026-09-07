@@ -1,412 +1,301 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-
-<title>DESI DROP - Battle Royale</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>DESI DROP</title>
 
 <style>
 *{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  user-select:none;
-  -webkit-user-select:none;
-  -webkit-touch-callout:none;
-  touch-action:none;
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+ user-select:none;
+ -webkit-user-select:none;
+ touch-action:none;
 }
 
 html,body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#111;
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-  position:fixed;
-  inset:0;
+ width:100%;
+ height:100%;
+ overflow:hidden;
+ background:#79a95a;
+ font-family:Arial,sans-serif;
 }
 
 canvas{
-  display:block;
-  width:100%;
-  height:100%;
+ position:fixed;
+ inset:0;
+ width:100%;
+ height:100%;
 }
 
-/* =========================
-   LOADING
-========================= */
-
-#loading{
-  position:fixed;
-  inset:0;
-  z-index:999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  background:#10150d;
-  color:white;
+#loading,#menu,#gameover{
+ position:fixed;
+ inset:0;
+ z-index:100;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ flex-direction:column;
+ background:rgba(5,10,5,.92);
+ color:white;
 }
 
-#loadingLogo{
-  font-size:42px;
-  font-weight:1000;
-  letter-spacing:5px;
-  color:#dfff78;
-  text-shadow:0 0 25px rgba(200,255,90,.25);
+#loading h1,
+#menu h1,
+#gameover h1{
+ font-size:44px;
+ color:#dfff70;
+ font-weight:1000;
+ letter-spacing:5px;
 }
 
-#loadingText{
-  margin-top:15px;
-  color:#ccc;
-}
-
-/* =========================
-   START SCREEN
-========================= */
-
-#startScreen,
-#endScreen{
-  position:fixed;
-  inset:0;
-  z-index:500;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:
-    radial-gradient(circle at center,
-      rgba(70,120,45,.35),
-      rgba(0,0,0,.92));
+#loading p{
+ margin-top:15px;
+ color:#bbb;
 }
 
 .card{
-  width:min(470px,90vw);
-  padding:28px;
-  border-radius:24px;
-  color:white;
-  text-align:center;
-  background:rgba(12,18,12,.94);
-  border:1px solid rgba(255,255,255,.18);
-  box-shadow:0 20px 70px rgba(0,0,0,.65);
+ width:min(430px,90vw);
+ padding:28px;
+ text-align:center;
+ background:rgba(15,22,14,.96);
+ border:1px solid #52604c;
+ border-radius:22px;
+ box-shadow:0 20px 70px #000;
 }
 
-.logo{
-  font-size:43px;
-  font-weight:1000;
-  letter-spacing:4px;
-  color:#dcff75;
+.card p{
+ margin:15px 0 22px;
+ line-height:1.7;
+ color:#ccc;
 }
 
-.subtitle{
-  margin-top:8px;
-  color:#bbb;
+input{
+ width:100%;
+ padding:14px;
+ border-radius:12px;
+ border:1px solid #66715f;
+ background:#202a1d;
+ color:white;
+ font-size:17px;
+ outline:none;
+ margin-bottom:12px;
+ touch-action:auto;
 }
 
-.instructions{
-  margin:20px 0;
-  text-align:left;
-  line-height:1.7;
-  color:#ddd;
-  font-size:14px;
+button{
+ border:0;
+ cursor:pointer;
 }
 
-#playerName{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.2);
-  background:#202820;
-  color:white;
-  font-size:16px;
-  outline:none;
-  margin-bottom:12px;
-  touch-action:auto;
+.play{
+ width:100%;
+ padding:15px;
+ border-radius:13px;
+ background:#8bd144;
+ color:#102008;
+ font-weight:1000;
+ font-size:18px;
 }
-
-.startBtn{
-  width:100%;
-  padding:16px;
-  border:0;
-  border-radius:14px;
-  background:#88c943;
-  color:#102008;
-  font-weight:1000;
-  font-size:18px;
-}
-
-/* =========================
-   HUD
-========================= */
 
 #hud{
-  position:fixed;
-  left:10px;
-  right:10px;
-  top:10px;
-  z-index:20;
-  display:flex;
-  justify-content:space-between;
-  pointer-events:none;
+ position:fixed;
+ z-index:20;
+ top:10px;
+ left:10px;
+ right:10px;
+ display:flex;
+ justify-content:space-between;
+ pointer-events:none;
 }
 
-.panel{
-  color:white;
-  background:rgba(8,14,9,.75);
-  border:1px solid rgba(255,255,255,.18);
-  border-radius:12px;
-  padding:9px 12px;
-  backdrop-filter:blur(5px);
-  box-shadow:0 4px 18px rgba(0,0,0,.3);
+.box{
+ padding:9px 12px;
+ color:white;
+ background:rgba(5,10,5,.72);
+ border:1px solid rgba(255,255,255,.2);
+ border-radius:12px;
+ text-shadow:0 2px 3px #000;
 }
 
-#title{
-  color:#ddff7c;
-  font-size:18px;
-  font-weight:1000;
-  letter-spacing:1px;
+#logo{
+ color:#dfff70;
+ font-size:18px;
+ font-weight:1000;
 }
 
-#stats{
-  margin-top:3px;
-  font-size:13px;
+#connection{
+ position:fixed;
+ z-index:30;
+ top:12px;
+ left:50%;
+ transform:translateX(-50%);
+ color:#ffe36b;
+ font-size:11px;
+ padding:5px 10px;
+ background:#0009;
+ border-radius:15px;
+ pointer-events:none;
 }
-
-#zoneText{
-  margin-top:3px;
-  font-size:12px;
-  color:#d5e9ff;
-}
-
-/* =========================
-   HEALTH
-========================= */
 
 #healthBox{
-  position:fixed;
-  z-index:30;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  width:min(360px,42vw);
-  pointer-events:none;
+ position:fixed;
+ z-index:30;
+ bottom:18px;
+ left:50%;
+ transform:translateX(-50%);
+ width:240px;
+ pointer-events:none;
 }
 
 #healthOuter{
-  height:16px;
-  overflow:hidden;
-  border:2px solid rgba(255,255,255,.8);
-  border-radius:20px;
-  background:rgba(0,0,0,.7);
+ height:16px;
+ border:2px solid white;
+ border-radius:20px;
+ overflow:hidden;
+ background:#000b;
 }
 
 #health{
-  width:100%;
-  height:100%;
-  background:#44d66b;
+ height:100%;
+ width:100%;
+ background:#45d56b;
 }
 
 #healthText{
-  margin-top:3px;
-  text-align:center;
-  color:white;
-  font-size:12px;
-  font-weight:bold;
-  text-shadow:0 2px 4px black;
+ text-align:center;
+ color:white;
+ font-size:12px;
+ margin-top:3px;
+ text-shadow:0 2px 3px #000;
 }
-
-/* =========================
-   MOBILE CONTROLS
-========================= */
-
-#controls{
-  position:fixed;
-  inset:0;
-  z-index:50;
-  pointer-events:none;
-}
-
-#joystick{
-  position:absolute;
-  left:22px;
-  bottom:25px;
-  width:140px;
-  height:140px;
-  border-radius:50%;
-  background:rgba(0,0,0,.25);
-  border:2px solid rgba(255,255,255,.22);
-  pointer-events:auto;
-}
-
-#stick{
-  position:absolute;
-  left:39px;
-  top:39px;
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:rgba(255,255,255,.38);
-  border:2px solid rgba(255,255,255,.55);
-}
-
-.action{
-  position:absolute;
-  border:2px solid rgba(255,255,255,.7);
-  border-radius:50%;
-  color:white;
-  font-weight:1000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 5px 18px rgba(0,0,0,.4);
-  pointer-events:auto;
-}
-
-#fire{
-  right:22px;
-  bottom:30px;
-  width:92px;
-  height:92px;
-  background:rgba(195,45,40,.8);
-  font-size:18px;
-}
-
-#aimButton{
-  right:125px;
-  bottom:125px;
-  width:60px;
-  height:60px;
-  background:rgba(50,70,90,.8);
-  font-size:13px;
-}
-
-#reload{
-  right:125px;
-  bottom:30px;
-  width:60px;
-  height:60px;
-  background:rgba(40,80,170,.8);
-  font-size:10px;
-}
-
-#med{
-  right:22px;
-  bottom:135px;
-  width:58px;
-  height:58px;
-  background:rgba(35,155,70,.8);
-  font-size:22px;
-}
-
-/* =========================
-   AIM AREA
-========================= */
-
-#aimArea{
-  position:absolute;
-  right:0;
-  top:0;
-  width:55%;
-  height:75%;
-  pointer-events:auto;
-}
-
-/* =========================
-   MESSAGE
-========================= */
-
-#message{
-  position:fixed;
-  left:50%;
-  top:52%;
-  transform:translate(-50%,-50%);
-  z-index:100;
-  color:white;
-  font-size:25px;
-  font-weight:1000;
-  text-align:center;
-  text-shadow:0 3px 12px black;
-  opacity:0;
-  transition:.2s;
-  pointer-events:none;
-}
-
-/* =========================
-   CROSSHAIR
-========================= */
 
 #crosshair{
-  position:fixed;
-  z-index:15;
-  left:50%;
-  top:50%;
-  width:22px;
-  height:22px;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
-}
-
-#crosshair:before,
-#crosshair:after{
-  content:"";
-  position:absolute;
-  background:rgba(255,255,255,.9);
+ position:fixed;
+ z-index:15;
+ left:50%;
+ top:50%;
+ width:24px;
+ height:24px;
+ transform:translate(-50%,-50%);
+ pointer-events:none;
 }
 
 #crosshair:before{
-  width:22px;
-  height:2px;
-  left:0;
-  top:10px;
+ content:"";
+ position:absolute;
+ width:24px;
+ height:2px;
+ top:11px;
+ background:white;
 }
 
 #crosshair:after{
-  width:2px;
-  height:22px;
-  left:10px;
-  top:0;
+ content:"";
+ position:absolute;
+ height:24px;
+ width:2px;
+ left:11px;
+ background:white;
 }
 
-/* =========================
-   CONNECTION
-========================= */
-
-#connection{
-  position:fixed;
-  left:50%;
-  top:12px;
-  transform:translateX(-50%);
-  z-index:80;
-  padding:6px 12px;
-  border-radius:20px;
-  background:rgba(0,0,0,.6);
-  color:#ffe47a;
-  font-size:11px;
-  pointer-events:none;
+#joystick{
+ position:fixed;
+ z-index:40;
+ left:20px;
+ bottom:25px;
+ width:140px;
+ height:140px;
+ border-radius:50%;
+ background:#0004;
+ border:2px solid #fff4;
 }
 
-@media(max-width:700px){
+#stick{
+ position:absolute;
+ width:58px;
+ height:58px;
+ left:39px;
+ top:39px;
+ border-radius:50%;
+ background:#ffffff66;
+ border:2px solid #ffffff88;
+}
 
-  #title{
-    font-size:15px;
-  }
+.action{
+ position:fixed;
+ z-index:40;
+ border-radius:50%;
+ color:white;
+ font-weight:1000;
+ border:2px solid #ffffffaa;
+ box-shadow:0 5px 15px #0008;
+}
 
-  #stats{
-    font-size:11px;
-  }
+#fire{
+ right:20px;
+ bottom:25px;
+ width:95px;
+ height:95px;
+ background:#c53030dd;
+}
 
-  .panel{
-    padding:7px 9px;
-  }
+#reload{
+ right:125px;
+ bottom:30px;
+ width:62px;
+ height:62px;
+ background:#315bbedd;
+ font-size:11px;
+}
 
-  #healthBox{
-    width:42vw;
-  }
+#med{
+ right:20px;
+ bottom:140px;
+ width:60px;
+ height:60px;
+ background:#249548dd;
+ font-size:22px;
+}
 
+#aim{
+ right:125px;
+ bottom:125px;
+ width:62px;
+ height:62px;
+ background:#394d60dd;
+ font-size:11px;
+}
+
+#look{
+ position:fixed;
+ z-index:10;
+ right:0;
+ top:0;
+ width:58%;
+ height:75%;
+}
+
+#message{
+ position:fixed;
+ z-index:50;
+ top:48%;
+ left:50%;
+ transform:translate(-50%,-50%);
+ color:white;
+ font-size:25px;
+ font-weight:1000;
+ text-shadow:0 3px 10px #000;
+ opacity:0;
+ transition:.2s;
+ pointer-events:none;
+}
+
+@media(max-width:600px){
+ #logo{font-size:14px}
+ .box{font-size:11px;padding:7px}
 }
 </style>
 </head>
@@ -414,130 +303,76 @@ canvas{
 <body>
 
 <div id="loading">
-  <div id="loadingLogo">DESI DROP</div>
-  <div id="loadingText">Loading battlefield...</div>
+ <h1>DESI DROP</h1>
+ <p>Loading Indian battlefield...</p>
 </div>
 
-<div id="connection">OFFLINE</div>
+<div id="menu" style="display:none">
+ <div class="card">
+  <h1>DESI DROP</h1>
 
-<div id="startScreen">
-  <div class="card">
+  <p>
+   🇮🇳 Indian Battle Royale<br>
+   🌾 Village • Farms • Roads<br>
+   🔫 Multiplayer Combat<br>
+   🏆 Last player alive wins
+  </p>
 
-    <div class="logo">DESI DROP</div>
+  <input id="name" maxlength="16" value="Ravi" placeholder="Your name">
 
-    <div class="subtitle">
-      Indian Battle Royale
-    </div>
-
-    <div class="instructions">
-      🎯 Third-person battle royale<br>
-      🌾 Indian village & farmland battlefield<br>
-      🛣️ Roads and highway<br>
-      🔫 Real-time multiplayer<br>
-      💊 Medkits & ammunition<br>
-      ☠️ Last player alive wins
-    </div>
-
-    <input
-      id="playerName"
-      maxlength="16"
-      placeholder="Enter your name"
-      value="Ravi"
-    >
-
-    <button class="startBtn" id="startBtn">
-      PLAY BATTLE
-    </button>
-
-  </div>
+  <button class="play" id="play">
+   PLAY BATTLE
+  </button>
+ </div>
 </div>
 
-<div id="endScreen" style="display:none">
-  <div class="card">
-
-    <div class="logo" id="endTitle">
-      BATTLE OVER
-    </div>
-
-    <div id="endStats" style="margin:20px 0;color:#ddd;"></div>
-
-    <button class="startBtn" id="restartBtn">
-      PLAY AGAIN
-    </button>
-
-  </div>
+<div id="gameover" style="display:none">
+ <div class="card">
+  <h1 id="result">BATTLE OVER</h1>
+  <p id="resultText"></p>
+  <button class="play" onclick="location.reload()">PLAY AGAIN</button>
+ </div>
 </div>
+
+<div id="connection">CONNECTING...</div>
 
 <div id="hud">
 
-  <div class="panel">
+ <div class="box">
+  <div id="logo">DESI DROP</div>
+  ❤️ <span id="hp">100</span>
+  &nbsp; 🔫 <span id="ammo">30</span>
+  &nbsp; ☠️ <span id="kills">0</span>
+ </div>
 
-    <div id="title">DESI DROP</div>
-
-    <div id="stats">
-      ❤️ <span id="hpStat">100</span>
-      &nbsp;
-      🔫 <span id="ammoStat">30</span>
-      &nbsp;
-      ☠️ <span id="killStat">0</span>
-    </div>
-
-  </div>
-
-  <div class="panel">
-
-    👥 ALIVE:
-    <span id="aliveStat">0</span>
-
-    <div id="zoneText">
-      SAFE ZONE
-    </div>
-
-  </div>
+ <div class="box">
+  👥 ALIVE: <span id="alive">0</span><br>
+  🟢 ZONE: <span id="zone">450</span>m
+ </div>
 
 </div>
 
 <div id="crosshair"></div>
 
 <div id="healthBox">
-
-  <div id="healthOuter">
-    <div id="health"></div>
-  </div>
-
-  <div id="healthText">
-    100 HP
-  </div>
-
+ <div id="healthOuter">
+  <div id="health"></div>
+ </div>
+ <div id="healthText">100 HP</div>
 </div>
 
 <div id="message"></div>
 
-<div id="controls">
+<div id="look"></div>
 
-  <div id="joystick">
-    <div id="stick"></div>
-  </div>
-
-  <div id="aimArea"></div>
-
-  <button class="action" id="fire">
-    FIRE
-  </button>
-
-  <button class="action" id="aimButton">
-    AIM
-  </button>
-
-  <button class="action" id="reload">
-    RELOAD
-  </button>
-
-  <button class="action" id="med">
-    ✚
-  </button>
-
+<div id="joystick">
+ <div id="stick"></div>
 </div>
+
+<button class="action" id="fire">FIRE</button>
+<button class="action" id="reload">RELOAD</button>
+<button class="action" id="med">✚</button>
+<button class="action" id="aim">AIM</button>
 
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
@@ -546,938 +381,1237 @@ canvas{
 import * as THREE from
 "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 
-/* =========================================================
+/* =====================================
    DESI DROP
-   3D MULTIPLAYER CLIENT
-========================================================= */
+   COMPLETE MULTIPLAYER CLIENT
+===================================== */
 
-/* =========================
-   SERVER
-========================= */
-
-const SERVER_URL =
+const SERVER =
 "https://desi-drop-server.onrender.com";
 
-/* =========================
-   THREE.JS
-========================= */
+let socket;
+let myId=null;
+let started=false;
 
-const scene = new THREE.Scene();
+const scene=new THREE.Scene();
 
-scene.background =
-new THREE.Color(0x8fc4e5);
+scene.background=
+new THREE.Color(0x8dbbd5);
 
-scene.fog =
-new THREE.Fog(0x8fc4e5,120,850);
-
-const camera =
-new THREE.PerspectiveCamera(
-  65,
-  innerWidth/innerHeight,
-  .1,
-  1500
+scene.fog=
+new THREE.Fog(
+ 0x8dbbd5,
+ 100,
+ 850
 );
 
-const renderer =
+const camera=
+new THREE.PerspectiveCamera(
+ 65,
+ innerWidth/innerHeight,
+ .1,
+ 1500
+);
+
+const renderer=
 new THREE.WebGLRenderer({
-  antialias:true,
-  powerPreference:"high-performance"
+ antialias:true,
+ powerPreference:"high-performance"
 });
 
-renderer.setPixelRatio(
-  Math.min(devicePixelRatio,1.7)
+renderer.setSize(
+ innerWidth,
+ innerHeight
 );
 
-renderer.setSize(
-  innerWidth,
-  innerHeight
+renderer.setPixelRatio(
+ Math.min(devicePixelRatio,1.5)
 );
 
 renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=
-THREE.PCFSoftShadowMap;
 
 document.body.appendChild(
-  renderer.domElement
+ renderer.domElement
 );
 
-/* =========================
-   LIGHTING
-========================= */
+/* =====================================
+   LIGHT
+===================================== */
 
-const hemi =
-new THREE.HemisphereLight(
-  0xbfe7ff,
-  0x49613b,
-  2.1
+scene.add(
+ new THREE.HemisphereLight(
+  0xbfeaff,
+  0x435536,
+  2
+ )
 );
 
-scene.add(hemi);
-
-const sun =
+const sun=
 new THREE.DirectionalLight(
-  0xfff0cf,
+  0xffefc0,
   3
 );
 
 sun.position.set(
-  -250,
-  400,
-  -200
+ -300,
+ 400,
+ -200
 );
 
 sun.castShadow=true;
 
-sun.shadow.mapSize.width=2048;
-sun.shadow.mapSize.height=2048;
-
-sun.shadow.camera.left=-500;
-sun.shadow.camera.right=500;
-sun.shadow.camera.top=500;
-sun.shadow.camera.bottom=-500;
-
 scene.add(sun);
 
-/* =========================
-   WORLD
-========================= */
-
-const WORLD_W=1200;
-const WORLD_D=900;
-
-const worldGroup=
-new THREE.Group();
-
-scene.add(worldGroup);
-
-/* =========================
+/* =====================================
    MATERIALS
-========================= */
+===================================== */
 
-const mats={
+const grass=
+new THREE.MeshLambertMaterial({
+ color:0x609647
+});
 
-  grass:new THREE.MeshLambertMaterial({
-    color:0x5e9942
-  }),
+const dirt=
+new THREE.MeshLambertMaterial({
+ color:0x99734d
+});
 
-  dirt:new THREE.MeshLambertMaterial({
-    color:0x9c7650
-  }),
+const road=
+new THREE.MeshLambertMaterial({
+ color:0x444444
+});
 
-  road:new THREE.MeshLambertMaterial({
-    color:0x444442
-  }),
+const wall=
+new THREE.MeshLambertMaterial({
+ color:0xd0ad76
+});
 
-  roof:new THREE.MeshLambertMaterial({
-    color:0x874431
-  }),
+const roof=
+new THREE.MeshLambertMaterial({
+ color:0x863e2d
+});
 
-  wall:new THREE.MeshLambertMaterial({
-    color:0xd2ae76
-  }),
+const tree=
+new THREE.MeshLambertMaterial({
+ color:0x286c31
+});
 
-  tree:new THREE.MeshLambertMaterial({
-    color:0x2e7134
-  }),
+const trunk=
+new THREE.MeshLambertMaterial({
+ color:0x654226
+});
 
-  trunk:new THREE.MeshLambertMaterial({
-    color:0x66452a
-  }),
+const white=
+new THREE.MeshLambertMaterial({
+ color:0xffffff
+});
 
-  water:new THREE.MeshLambertMaterial({
-    color:0x3e8fb0
-  }),
+const field=
+new THREE.MeshLambertMaterial({
+ color:0x9ebc48
+});
 
-  field:new THREE.MeshLambertMaterial({
-    color:0x9ebc47
-  }),
+/* =====================================
+   WORLD
+===================================== */
 
-  white:new THREE.MeshLambertMaterial({
-    color:0xffffff
-  })
-
-};
-
-/* =========================
-   GROUND
-========================= */
-
-const ground =
+const ground=
 new THREE.Mesh(
-  new THREE.PlaneGeometry(
-    WORLD_W,
-    WORLD_D
-  ),
-  mats.grass
+ new THREE.PlaneGeometry(
+  1200,
+  900
+ ),
+ grass
 );
 
 ground.rotation.x=-Math.PI/2;
 ground.receiveShadow=true;
 
-worldGroup.add(ground);
+scene.add(ground);
 
-/* =========================
-   ROAD CREATOR
-========================= */
-
-function box(
-  x,y,z,
-  sx,sy,sz,
-  material,
-  shadow=true
+function cube(
+ x,y,z,
+ w,h,d,
+ material
 ){
 
-  const mesh=
-  new THREE.Mesh(
-    new THREE.BoxGeometry(
-      sx,sy,sz
-    ),
-    material
-  );
+ const m=
+ new THREE.Mesh(
+  new THREE.BoxGeometry(
+   w,h,d
+  ),
+  material
+ );
 
-  mesh.position.set(
-    x,y,z
-  );
+ m.position.set(
+  x,y,z
+ );
 
-  mesh.castShadow=shadow;
-  mesh.receiveShadow=true;
+ m.castShadow=true;
+ m.receiveShadow=true;
 
-  worldGroup.add(mesh);
+ scene.add(m);
 
-  return mesh;
+ return m;
 }
 
-/* =========================
-   MAIN ROADS
-========================= */
+/* Main village roads */
 
-box(
-  0,.03,0,
-  WORLD_W,
-  .08,
-  70,
-  mats.dirt,
-  false
+cube(
+ 0,.04,0,
+ 1200,.08,65,
+ dirt
 );
 
-box(
-  0,.04,0,
-  55,
-  .08,
-  WORLD_D,
-  mats.dirt,
-  false
+cube(
+ 0,.05,0,
+ 55,.08,900,
+ dirt
 );
 
 /* Highway */
 
-box(
-  0,.05,310,
-  WORLD_W,
-  .1,
-  85,
-  mats.road,
-  false
+cube(
+ 0,.06,300,
+ 1200,.12,85,
+ road
 );
 
-/* highway center line */
+/* Highway markings */
 
-for(let x=-560;x<560;x+=55){
-
-  box(
-    x,
-    .11,
-    310,
-    30,
-    .03,
-    2,
-    mats.white,
-    false
-  );
-
-}
-
-/* =========================
-   HOUSES
-========================= */
-
-function createHouse(
-  x,z,
-  scale=1
+for(
+ let x=-550;
+ x<550;
+ x+=55
 ){
 
-  const g=
-  new THREE.Group();
-
-  const base=
-  new THREE.Mesh(
-    new THREE.BoxGeometry(
-      48*scale,
-      28*scale,
-      40*scale
-    ),
-    mats.wall
-  );
-
-  base.position.y=
-  14*scale;
-
-  base.castShadow=true;
-  base.receiveShadow=true;
-
-  g.add(base);
-
-  const roof=
-  new THREE.Mesh(
-    new THREE.ConeGeometry(
-      35*scale,
-      24*scale,
-      4
-    ),
-    mats.roof
-  );
-
-  roof.rotation.y=
-  Math.PI/4;
-
-  roof.position.y=
-  40*scale;
-
-  roof.castShadow=true;
-
-  g.add(roof);
-
-  g.position.set(
-    x,0,z
-  );
-
-  worldGroup.add(g);
+ cube(
+  x,.13,300,
+ 30,.03,2,
+  white
+ );
 
 }
 
-const houseLocations=[
-  [-430,-250],
-  [-340,-180],
-  [-240,-280],
-  [280,-250],
-  [380,-180],
-  [450,-270],
-  [-450,150],
-  [-350,220],
-  [330,160],
-  [430,220],
-  [-250,340],
-  [250,360]
-];
+/* =====================================
+   HOUSES
+===================================== */
 
-for(const p of houseLocations){
+function house(x,z){
 
-  createHouse(
-    p[0],
-    p[1],
-    .8+Math.random()*.4
-  );
+ const g=
+ new THREE.Group();
 
+ const body=
+ new THREE.Mesh(
+  new THREE.BoxGeometry(
+   42,26,36
+  ),
+  wall
+ );
+
+ body.position.y=13;
+ body.castShadow=true;
+
+ g.add(body);
+
+ const r=
+ new THREE.Mesh(
+  new THREE.ConeGeometry(
+   31,21,4
+  ),
+  roof
+ );
+
+ r.rotation.y=Math.PI/4;
+ r.position.y=36;
+ r.castShadow=true;
+
+ g.add(r);
+
+ g.position.set(
+  x,0,z
+ );
+
+ scene.add(g);
 }
 
-/* =========================
+[
+ [-430,-220],
+ [-330,-170],
+ [-250,-260],
+ [300,-240],
+ [410,-180],
+ [470,-260],
+ [-430,160],
+ [-340,230],
+ [320,170],
+ [430,230],
+ [-250,350],
+ [250,350]
+].forEach(
+ p=>house(p[0],p[1])
+);
+
+/* =====================================
    TREES
-========================= */
+===================================== */
 
-function createTree(x,z){
+function makeTree(x,z){
 
-  const g=
-  new THREE.Group();
+ const g=
+ new THREE.Group();
 
-  const trunk=
-  new THREE.Mesh(
-    new THREE.CylinderGeometry(
-      2.5,
-      3,
-      16,
-      8
-    ),
-    mats.trunk
-  );
+ const t=
+ new THREE.Mesh(
+  new THREE.CylinderGeometry(
+   2.5,3,16,8
+  ),
+  trunk
+ );
 
-  trunk.position.y=8;
-  trunk.castShadow=true;
+ t.position.y=8;
+ t.castShadow=true;
 
-  g.add(trunk);
+ g.add(t);
 
-  const crown=
-  new THREE.Mesh(
-    new THREE.SphereGeometry(
-      12,
-      10,
-      8
-    ),
-    mats.tree
-  );
+ const c=
+ new THREE.Mesh(
+  new THREE.SphereGeometry(
+   12,10,8
+  ),
+  tree
+ );
 
-  crown.position.y=22;
-  crown.castShadow=true;
+ c.position.y=22;
+ c.castShadow=true;
 
-  g.add(crown);
+ g.add(c);
 
-  g.position.set(
-    x,0,z
-  );
+ g.position.set(
+  x,0,z
+ );
 
-  worldGroup.add(g);
-
+ scene.add(g);
 }
 
 for(let i=0;i<100;i++){
 
-  let x=
-  (Math.random()-.5)*1100;
+ const x=
+ (Math.random()-.5)*1100;
 
-  let z=
-  (Math.random()-.5)*800;
+ const z=
+ (Math.random()-.5)*800;
 
-  if(
-    Math.abs(z)<70 ||
-    Math.abs(x)<45
-  ){
-    i--;
-    continue;
-  }
+ if(
+  Math.abs(x)<65 ||
+  Math.abs(z)<80
+ ){
 
-  createTree(x,z);
+  i--;
+  continue;
 
+ }
+
+ makeTree(x,z);
 }
 
-/* =========================
+/* =====================================
    FARM FIELDS
-========================= */
+===================================== */
 
-for(let i=0;i<14;i++){
+for(let i=0;i<16;i++){
 
-  const x=
-  (Math.random()-.5)*950;
+ const x=
+ (Math.random()-.5)*1000;
 
-  const z=
-  (Math.random()-.5)*650;
+ const z=
+ (Math.random()-.5)*650;
 
-  if(
-    Math.abs(z)<100 ||
-    Math.abs(x)<80
-  ){
-    i--;
-    continue;
-  }
+ const f=
+ new THREE.Mesh(
+  new THREE.BoxGeometry(
+   100,
+   .15,
+   60
+  ),
+  field
+ );
 
-  const field=
-  new THREE.Mesh(
-    new THREE.BoxGeometry(
-      80+Math.random()*100,
-      .15,
-      50+Math.random()*80
-    ),
-    mats.field
-  );
+ f.position.set(
+  x,.1,z
+ );
 
-  field.position.set(
-    x,
-    .1,
-    z
-  );
-
-  field.receiveShadow=true;
-
-  worldGroup.add(field);
-
+ scene.add(f);
 }
 
-/* =========================
-   WATER TANK
-========================= */
+/* =====================================
+   PLAYER
+===================================== */
 
-function createTank(x,z){
+function playerModel(color){
 
-  const tank=
-  new THREE.Mesh(
-    new THREE.CylinderGeometry(
-      12,12,30,16
-    ),
-    mats.white
-  );
+ const g=
+ new THREE.Group();
 
-  tank.position.set(
-    x,15,z
-  );
+ const body=
+ new THREE.Mesh(
+  new THREE.BoxGeometry(
+   12,16,8
+  ),
+  new THREE.MeshLambertMaterial({
+   color
+  })
+ );
 
-  tank.castShadow=true;
+ body.position.y=15;
+ body.castShadow=true;
 
-  worldGroup.add(tank);
+ g.add(body);
 
+ const head=
+ new THREE.Mesh(
+  new THREE.SphereGeometry(
+   6,12,10
+  ),
+  new THREE.MeshLambertMaterial({
+   color:0xb97d50
+  })
+ );
+
+ head.position.y=28;
+ head.castShadow=true;
+
+ g.add(head);
+
+ const gun=
+ new THREE.Mesh(
+  new THREE.BoxGeometry(
+   3,3,18
+  ),
+  new THREE.MeshLambertMaterial({
+   color:0x202020
+  })
+ );
+
+ gun.position.set(
+  7,15,-5
+ );
+
+ g.add(gun);
+
+ return g;
 }
 
-createTank(-500,350);
-createTank(500,-350);
-
-/* =========================
-   PLAYER MODELS
-========================= */
-
-const playerMeshes=
-new Map();
-
-function makeCharacter(
-  color=0x315d36
-){
-
-  const g=
-  new THREE.Group();
-
-  const body=
-  new THREE.Mesh(
-    new THREE.CapsuleGeometry(
-      7,12,4,8
-    ),
-    new THREE.MeshLambertMaterial({
-      color
-    })
-  );
-
-  body.position.y=15;
-  body.castShadow=true;
-
-  g.add(body);
-
-  const head=
-  new THREE.Mesh(
-    new THREE.SphereGeometry(
-      6.5,
-      12,
-      10
-    ),
-    new THREE.MeshLambertMaterial({
-      color:0xb7794c
-    })
-  );
-
-  head.position.y=30;
-  head.castShadow=true;
-
-  g.add(head);
-
-  /* shirt */
-
-  const shirt=
-  new THREE.Mesh(
-    new THREE.BoxGeometry(
-      13,15,8
-    ),
-    new THREE.MeshLambertMaterial({
-      color
-    })
-  );
-
-  shirt.position.y=16;
-  shirt.castShadow=true;
-
-  g.add(shirt);
-
-  /* weapon */
-
-  const weapon=
-  new THREE.Mesh(
-    new THREE.BoxGeometry(
-      3,3,17
-    ),
-    new THREE.MeshLambertMaterial({
-      color:0x222222
-    })
-  );
-
-  weapon.position.set(
-    8,
-    17,
-    -5
-  );
-
-  weapon.rotation.x=
-  -0.15;
-
-  g.add(weapon);
-
-  return g;
-
-}
-
-/* =========================
-   LOCAL PLAYER
-========================= */
-
-let myId=null;
-
-let localPlayer={
-  x:0,
-  z:0,
-  hp:100,
-  ammo:30,
-  med:2,
-  kills:0,
-  alive:true,
-  ax:0,
-  az:-1
-};
-
-/* =========================
-   CAMERA
-========================= */
-
-let cameraYaw=0;
-let cameraPitch=0.28;
-
-const cameraTarget=
-new THREE.Vector3();
-
-function updateCamera(){
-
-  if(!localPlayer.alive)
-    return;
-
-  cameraTarget.set(
-    localPlayer.x,
-    17,
-    localPlayer.z
-  );
-
-  const distance=75;
-
-  const offset=
-  new THREE.Vector3(
-    Math.sin(cameraYaw)*distance,
-    35,
-    Math.cos(cameraYaw)*distance
-  );
-
-  camera.position.lerp(
-    cameraTarget.clone().add(offset),
-    .13
-  );
-
-  camera.lookAt(
-    cameraTarget
-  );
-
-}
-
-/* =========================
-   SOCKET
-========================= */
-
-let socket=null;
-
-function connectServer(){
-
-  setConnection(
-    "CONNECTING...",
-    "#ffe47a"
-  );
-
-  socket=
-  io(SERVER_URL,{
-    transports:["websocket","polling"]
-  });
-
-  socket.on("connect",()=>{
-
-    setConnection(
-      "CONNECTED",
-      "#79ff8a"
-    );
-
-    socket.emit(
-      "join",
-      {
-        name:
-        document.getElementById(
-          "playerName"
-        ).value.trim() ||
-        "Desi Player"
-      }
-    );
-
-  });
-
-  socket.on("connect_error",()=>{
-
-    setConnection(
-      "SERVER ERROR",
-      "#ff7070"
-    );
-
-  });
-
-  socket.on("disconnect",()=>{
-
-    setConnection(
-      "DISCONNECTED",
-      "#ff7070"
-    );
-
-  });
-
-  socket.on("welcome",data=>{
-
-    myId=data.id;
-
-  });
-
-  socket.on("joined",()=>{
-
-    showMessage(
-      "WELCOME TO DESI DROP",
-      1500
-    );
-
-  });
-
-  socket.on("state",data=>{
-
-    updateState(data);
-
-  });
-
-  socket.on("gameover",data=>{
-
-    showEndScreen(data);
-
-  });
-
-}
-
-/* =========================
-   CONNECTION TEXT
-========================= */
-
-function setConnection(
-  text,
-  color
-){
-
-  const el=
-  document.getElementById(
-    "connection"
-  );
-
-  el.textContent=text;
-  el.style.color=color;
-
-}
-
-/* =========================
-   STATE
-========================= */
-
-let remoteState={};
-
-let safeZone={
-  x:0,
-  z:0,
-  r:450
-};
-
-function updateState(data){
-
-  if(!data)
-    return;
-
-  remoteState=
-  data.players || {};
-
-  if(data.safe){
-
-    safeZone.x=data.safe.x;
-    safeZone.z=data.safe.z;
-    safeZone.r=data.safe.r;
-
-  }
-
-  const me=
-  remoteState[myId];
-
-  if(me){
-
-    localPlayer.x=me.x;
-    localPlayer.z=me.z;
-
-    localPlayer.hp=me.hp;
-    localPlayer.ammo=me.ammo;
-    localPlayer.med=me.med;
-    localPlayer.kills=me.kills;
-    localPlayer.alive=me.alive;
-
-    localPlayer.ax=me.ax;
-    localPlayer.az=me.az;
-
-  }
-
-  updatePlayers();
-
-  updateHUD();
-
-}
-
-/* =========================
-   REMOTE PLAYERS
-========================= */
-
-function updatePlayers(){
-
-  const seen=
-  new Set();
-
-  for(const id in remoteState){
-
-    const p=
-    remoteState[id];
-
-    if(id===myId)
-      continue;
-
-    seen.add(id);
-
-    let mesh=
-    playerMeshes.get(id);
-
-    if(!mesh){
-
-      mesh=
-      makeCharacter(
-        0x8b3f32
-      );
-
-      playerMeshes.set(
-        id,
-        mesh
-      );
-
-      scene.add(mesh);
-
-    }
-
-    mesh.visible=
-    p.alive;
-
-    mesh.position.set(
-      p.x,
-      0,
-      p.z
-    );
-
-    if(p.ax!==undefined){
-
-      mesh.rotation.y=
-      Math.atan2(
-        p.ax,
-        p.az
-      );
-
-    }
-
-  }
-
-  for(
-    const [id,mesh]
-    of playerMeshes
-  ){
-
-    if(!seen.has(id)){
-
-      scene.remove(mesh);
-
-      playerMeshes.delete(id);
-
-    }
-
-  }
-
-}
-
-/* =========================
-   LOCAL PLAYER VISUAL
-========================= */
-
-let localMesh=
-makeCharacter(0x315d36);
+const localMesh=
+playerModel(0x315f36);
 
 scene.add(localMesh);
 
-function updateLocalVisual(){
+const remote=
+new Map();
 
-  localMesh.position.set(
-    localPlayer.x,
-    0,
-    localPlayer.z
-  );
+/* =====================================
+   PLAYER STATE
+===================================== */
 
-  localMesh.rotation.y=
-  Math.atan2(
-    localPlayer.ax,
-    localPlayer.az
-  );
+let me={
+ x:0,
+ z:0,
+ hp:100,
+ ammo:30,
+ med:2,
+ kills:0,
+ alive:true,
+ ax:0,
+ az:-1
+};
 
-  localMesh.visible=
-  localPlayer.alive;
+let players={};
+
+let zone={
+ x:0,
+ z:0,
+ r:450
+};
+
+/* =====================================
+   CAMERA
+===================================== */
+
+let yaw=0;
+
+function updateCamera(){
+
+ if(!me.alive)return;
+
+ const target=
+ new THREE.Vector3(
+  me.x,
+  17,
+  me.z
+ );
+
+ const distance=70;
+
+ camera.position.lerp(
+  new THREE.Vector3(
+   me.x+
+    Math.sin(yaw)*distance,
+   38,
+   me.z+
+    Math.cos(yaw)*distance
+  ),
+  .12
+ );
+
+ camera.lookAt(target);
+}
+
+/* =====================================
+   SERVER CONNECTION
+===================================== */
+
+function connect(){
+
+ setStatus(
+  "CONNECTING...",
+  "#ffe36b"
+ );
+
+ socket=
+ io(SERVER,{
+  transports:[
+   "websocket",
+   "polling"
+  ]
+ });
+
+ socket.on(
+  "connect",
+  ()=>{
+
+   setStatus(
+    "CONNECTED",
+    "#65ff7b"
+   );
+
+   socket.emit(
+    "join",
+    {
+     name:
+      document.getElementById(
+       "name"
+      ).value.trim() ||
+      "Desi Player"
+    }
+   );
+
+  }
+ );
+
+ socket.on(
+  "welcome",
+  d=>{
+   myId=d.id;
+  }
+ );
+
+ socket.on(
+  "joined",
+  ()=>{
+   message(
+    "WELCOME TO DESI DROP",
+    1500
+   );
+  }
+ );
+
+ socket.on(
+  "state",
+  state=>{
+   receiveState(state);
+  }
+ );
+
+ socket.on(
+  "gameover",
+  data=>{
+   endGame(data);
+  }
+ );
+
+ socket.on(
+  "disconnect",
+  ()=>{
+   setStatus(
+    "DISCONNECTED",
+    "#ff6464"
+   );
+  }
+ );
+
+ socket.on(
+  "connect_error",
+  ()=>{
+   setStatus(
+    "SERVER ERROR",
+    "#ff6464"
+   );
+  }
+ );
+}
+
+function setStatus(
+ text,
+ color
+){
+
+ const e=
+ document.getElementById(
+  "connection"
+ );
+
+ e.textContent=text;
+ e.style.color=color;
+}
+
+/* =====================================
+   RECEIVE SERVER STATE
+===================================== */
+
+function receiveState(data){
+
+ players=
+ data.players||{};
+
+ if(data.safe){
+
+  zone=data.safe;
+
+ }
+
+ const p=
+ players[myId];
+
+ if(p){
+
+  me.x=p.x;
+  me.z=p.z;
+  me.hp=p.hp;
+  me.ammo=p.ammo;
+  me.med=p.med;
+  me.kills=p.kills;
+  me.alive=p.alive;
+  me.ax=p.ax;
+  me.az=p.az;
+
+ }
+
+ updateRemotePlayers();
+ updateHUD();
 
 }
 
-/* =========================
-   JOYSTICK
-========================= */
+/* =====================================
+   REMOTE PLAYERS
+===================================== */
 
-const joystick=
+function updateRemotePlayers(){
+
+ const seen=
+ new Set();
+
+ for(
+  const id in players
+ ){
+
+  if(id===myId)
+   continue;
+
+  const p=
+  players[id];
+
+  seen.add(id);
+
+  let m=
+  remote.get(id);
+
+  if(!m){
+
+   m=
+   playerModel(
+    0x8b4032
+   );
+
+   remote.set(
+    id,m
+   );
+
+   scene.add(m);
+
+  }
+
+  m.visible=p.alive;
+
+  m.position.set(
+   p.x,
+   0,
+   p.z
+  );
+
+  m.rotation.y=
+   Math.atan2(
+    p.ax,
+    p.az
+   );
+
+ }
+
+ for(
+  const [id,m]
+  of remote
+ ){
+
+  if(!seen.has(id)){
+
+   scene.remove(m);
+   remote.delete(id);
+
+  }
+ }
+}
+
+/* =====================================
+   LOCAL VISUAL
+===================================== */
+
+function updateLocal(){
+
+ localMesh.visible=
+  me.alive;
+
+ localMesh.position.set(
+  me.x,
+  0,
+  me.z
+ );
+
+ localMesh.rotation.y=
+  Math.atan2(
+   me.ax,
+   me.az
+  );
+}
+
+/* =====================================
+   HUD
+===================================== */
+
+function updateHUD(){
+
+ document.getElementById(
+  "hp"
+ ).textContent=
+  Math.round(me.hp);
+
+ document.getElementById(
+  "ammo"
+ ).textContent=
+  me.ammo;
+
+ document.getElementById(
+  "kills"
+ ).textContent=
+  me.kills;
+
+ document.getElementById(
+  "health"
+ ).style.width=
+  Math.max(
+   0,
+   me.hp
+  )+"%";
+
+ document.getElementById(
+  "healthText"
+ ).textContent=
+  Math.round(me.hp)+" HP";
+
+ document.getElementById(
+  "alive"
+ ).textContent=
+  Object.values(players)
+  .filter(
+   p=>p.alive
+  ).length;
+
+ document.getElementById(
+  "zone"
+ ).textContent=
+  Math.round(zone.r);
+
+}
+
+/* =====================================
+   JOYSTICK
+===================================== */
+
+const joy=
 document.getElementById(
-  "joystick"
+ "joystick"
 );
 
 const stick=
 document.getElementById(
-  "stick"
+ "stick"
 );
 
-let moveX=0;
-let moveY=0;
-let joystickActive=false;
+let mx=0;
+let mz=0;
+let joyOn=false;
 
-function setJoystick(
-  x,
-  y
+function moveJoy(
+ x,y
 ){
 
-  const rect=
-  joystick.getBoundingClientRect();
+ const r=
+ joy.getBoundingClientRect();
 
-  const cx=
-  rect.left+
-  rect.width/2;
+ const cx=
+ r.left+r.width/2;
 
-  const cy=
-  rect.top+
-  rect.height/2;
+ const cy=
+ r.top+r.height/2;
 
-  let dx=x-cx;
-  let dy=y-cy;
+ let dx=x-cx;
+ let dy=y-cy;
 
-  const max=45;
+ const max=45;
 
-  const len=
-  Math.hypot(dx,dy);
+ const len=
+ Math.hypot(dx,dy);
 
-  if(len>max){
+ if(len>max){
 
-    dx=dx/len*max;
-    dy=dy/len*max;
+  dx=dx/len*max;
+  dy=dy/len*max;
+
+ }
+
+ mx=dx/max;
+ mz=dy/max;
+
+ stick.style.transform=
+  `translate(${dx}px,${dy}px)`;
+}
+
+function resetJoy(){
+
+ joyOn=false;
+ mx=0;
+ mz=0;
+
+ stick.style.transform=
+  "translate(0,0)";
+}
+
+joy.addEventListener(
+ "pointerdown",
+ e=>{
+
+  joyOn=true;
+
+  joy.setPointerCapture(
+   e.pointerId
+  );
+
+  moveJoy(
+   e.clientX,
+   e.clientY
+  );
+ }
+);
+
+joy.addEventListener(
+ "pointermove",
+ e=>{
+
+  if(joyOn)
+   moveJoy(
+    e.clientX,
+    e.clientY
+   );
+
+ }
+);
+
+joy.addEventListener(
+ "pointerup",
+ resetJoy
+);
+
+joy.addEventListener(
+ "pointercancel",
+ resetJoy
+);
+
+/* =====================================
+   LOOK / AIM
+===================================== */
+
+const look=
+document.getElementById(
+ "look"
+);
+
+let looking=false;
+let lastX=0;
+
+look.addEventListener(
+ "pointerdown",
+ e=>{
+
+  looking=true;
+  lastX=e.clientX;
+
+  look.setPointerCapture(
+   e.pointerId
+  );
+ }
+);
+
+look.addEventListener(
+ "pointermove",
+ e=>{
+
+  if(!looking)return;
+
+  const dx=
+   e.clientX-lastX;
+
+  yaw-=dx*.008;
+
+  lastX=e.clientX;
+
+ }
+);
+
+look.addEventListener(
+ "pointerup",
+ ()=>looking=false
+);
+
+look.addEventListener(
+ "pointercancel",
+ ()=>looking=false
+);
+
+/* =====================================
+   FIRE
+===================================== */
+
+let firing=false;
+
+const fire=
+document.getElementById(
+ "fire"
+);
+
+fire.addEventListener(
+ "pointerdown",
+ e=>{
+  e.preventDefault();
+  firing=true;
+ }
+);
+
+fire.addEventListener(
+ "pointerup",
+ ()=>{
+  firing=false;
+ }
+);
+
+fire.addEventListener(
+ "pointercancel",
+ ()=>{
+  firing=false;
+ }
+);
+
+fire.addEventListener(
+ "pointerleave",
+ ()=>{
+  firing=false;
+ }
+);
+
+/* =====================================
+   RELOAD
+===================================== */
+
+document
+.getElementById("reload")
+.addEventListener(
+ "pointerdown",
+ ()=>{
+  if(socket)
+   socket.emit("reload");
+
+  message(
+   "RELOADING",
+   800
+  );
+ }
+);
+
+/* =====================================
+   MEDKIT
+===================================== */
+
+document
+.getElementById("med")
+.addEventListener(
+ "pointerdown",
+ ()=>{
+  if(socket)
+   socket.emit("heal");
+ }
+);
+
+/* =====================================
+   AIM
+===================================== */
+
+document
+.getElementById("aim")
+.addEventListener(
+ "pointerdown",
+ ()=>{
+  message(
+   "AIM",
+   400
+  );
+ }
+);
+
+/* =====================================
+   SEND INPUT
+===================================== */
+
+function sendInput(){
+
+ if(!socket)return;
+ if(!socket.connected)return;
+ if(!me.alive)return;
+
+ let dx=mx;
+ let dz=mz;
+
+ const len=
+ Math.hypot(dx,dz);
+
+ if(len>1){
+
+  dx/=len;
+  dz/=len;
+
+ }
+
+ const worldX=
+  dx*Math.cos(yaw)-
+  dz*Math.sin(yaw);
+
+ const worldZ=
+  dx*Math.sin(yaw)+
+  dz*Math.cos(yaw);
+
+ const ax=
+  Math.sin(yaw);
+
+ const az=
+  Math.cos(yaw);
+
+ socket.emit(
+  "input",
+  {
+   dx:worldX,
+   dz:worldZ,
+   ax:ax,
+   az:az,
+   shoot:firing
+  }
+ );
+}
+
+/* =====================================
+   MESSAGE
+===================================== */
+
+let msgTimer;
+
+function message(
+ text,
+ duration=1000
+){
+
+ const e=
+ document.getElementById(
+  "message"
+ );
+
+ e.textContent=text;
+ e.style.opacity=1;
+
+ clearTimeout(msgTimer);
+
+ msgTimer=
+ setTimeout(
+  ()=>{
+   e.style.opacity=0;
+  },
+  duration
+ );
+}
+
+/* =====================================
+   GAME OVER
+===================================== */
+
+function endGame(data){
+
+ firing=false;
+
+ document.getElementById(
+  "gameover"
+ ).style.display=
+  "flex";
+
+ document.getElementById(
+  "result"
+ ).textContent=
+  data.win ?
+   "🏆 YOU WIN!" :
+   "☠️ YOU LOST";
+
+ document.getElementById(
+  "resultText"
+ ).innerHTML=
+  `
+  ${data.text||"Battle finished."}
+  <br><br>
+  ☠️ Kills: ${me.kills}
+  <br>
+  ❤️ Health: ${Math.round(me.hp)}
+  `;
+
+}
+
+/* =====================================
+   START
+===================================== */
+
+document
+.getElementById("play")
+.addEventListener(
+ "click",
+ ()=>{
+
+  if(started)return;
+
+  started=true;
+
+  document.getElementById(
+   "menu"
+  ).style.display="none";
+
+  connect();
+
+ }
+);
+
+/* =====================================
+   GAME LOOP
+===================================== */
+
+let last=
+ performance.now();
+
+function loop(){
+
+ requestAnimationFrame(
+  loop
+ );
+
+ const now=
+  performance.now();
+
+ if(started){
+
+  if(now-last>50){
+
+   last=now;
+
+   sendInput();
 
   }
 
-  moveX=dx/max;
-  moveY=dy/max;
+  updateLocal();
+  updateCamera();
 
-  stick.style.transform=
-  `translate(${dx}px,${dy}px
+ }
+
+ renderer.render(
+  scene,
+  camera
+ );
+}
+
+loop();
+
+/* =====================================
+   RESIZE
+===================================== */
+
+window.addEventListener(
+ "resize",
+ ()=>{
+
+  camera.aspect=
+   innerWidth/
+   innerHeight;
+
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(
+   innerWidth,
+   innerHeight
+  );
+
+ }
+);
+
+/* =====================================
+   STARTUP
+===================================== */
+
+setTimeout(
+ ()=>{
+
+  document.getElementById(
+   "loading"
+  ).style.display="none";
+
+  document.getElementById(
+   "menu"
+  ).style.display="flex";
+
+ },
+ 900
+);
+
+</script>
+
+</body>
+</html>
