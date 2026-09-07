@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>DESI DROP - Battle Royale Trial</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-user-select:none;
+  user-select:none;
+  touch-action:none;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#111;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  position:relative;
+}
+
+canvas{
+  display:block;
+  width:100%;
+  height:100%;
+  background:#6fa34c;
+}
+
+#hud{
+  position:fixed;
+  top:10px;
+  left:10px;
+  right:10px;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  pointer-events:none;
+}
+
+.panel{
+  background:rgba(10,20,15,.78);
+  color:white;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:12px;
+  padding:9px 12px;
+  box-shadow:0 4px 15px rgba(0,0,0,.25);
+  backdrop-filter:blur(5px);
+}
+
+#stats{
+  font-size:14px;
+  line-height:1.55;
+}
+
+#title{
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:1px;
+  color:#d8ff7a;
+}
+
+#zoneText{
+  font-size:12px;
+  margin-top:2px;
+}
+
+#healthBox{
+  position:fixed;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  width:min(360px,48vw);
+  z-index:12;
+  pointer-events:none;
+}
+
+#healthOuter{
+  height:16px;
+  background:rgba(0,0,0,.6);
+  border:2px solid rgba(255,255,255,.75);
+  border-radius:20px;
+  overflow:hidden;
+}
+
+#health{
+  height:100%;
+  width:100%;
+  background:#42d66b;
+  transition:width .1s linear;
+}
+
+#healthText{
+  color:white;
+  text-align:center;
+  font-weight:bold;
+  font-size:12px;
+  margin-top:3px;
+  text-shadow:0 2px 4px #000;
+}
+
+#controls{
+  position:fixed;
+  inset:0;
+  z-index:20;
+  pointer-events:none;
+}
+
+#joystick{
+  position:absolute;
+  left:25px;
+  bottom:25px;
+  width:135px;
+  height:135px;
+  border-radius:50%;
+  background:rgba(0,0,0,.22);
+  border:2px solid rgba(255,255,255,.25);
+  pointer-events:auto;
+}
+
+#stick{
+  position:absolute;
+  width:58px;
+  height:58px;
+  left:38px;
+  top:38px;
+  border-radius:50%;
+  background:rgba(255,255,255,.38);
+  border:2px solid rgba(255,255,255,.55);
+}
+
+.action{
+  position:absolute;
+  border:none;
+  color:white;
+  font-weight:900;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 5px 15px rgba(0,0,0,.35);
+  pointer-events:auto;
+}
+
+#fire{
+  right:25px;
+  bottom:35px;
+  width:90px;
+  height:90px;
+  background:rgba(190,45,40,.78);
+  border:3px solid rgba(255,255,255,.65);
+  font-size:18px;
+}
+
+#med{
+  right:125px;
+  bottom:105px;
+  width:58px;
+  height:58px;
+  background:rgba(30,150,70,.8);
+  border:2px solid white;
+  font-size:22px;
+}
+
+#reload{
+  right:125px;
+  bottom:30px;
+  width:58px;
+  height:58px;
+  background:rgba(30,70,160,.8);
+  border:2px solid white;
+  font-size:11px;
+}
+
+#startScreen,
+#endScreen{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at center,
+      rgba(50,100,45,.35),
+      rgba(0,0,0,.9));
+}
+
+.card{
+  width:min(470px,90vw);
+  padding:28px;
+  border-radius:24px;
+  color:white;
+  text-align:center;
+  background:rgba(12,18,12,.92);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+
+.logo{
+  font-size:42px;
+  font-weight:1000;
+  letter-spacing:3px;
+  color:#d9ff76;
+  text-shadow:0 4px 20px rgba(150,255,60,.25);
+}
+
+.subtitle{
+  margin-top:7px;
+  color:#ccc;
+  font-size:14px;
+}
+
+.instructions{
+  margin:20px 0;
+  text-align:left;
+  line-height:1.7;
+  font-size:14px;
+  color:#ddd;
+}
+
+button.start{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:14px;
+  background:#83c341;
+  color:#102008;
+  font-weight:1000;
+  font-size:18px;
+  cursor:pointer;
+}
+
+button.start:active{
+  transform:scale(.97);
+}
+
+#endTitle{
+  font-size:38px;
+  font-weight:1000;
+  color:#d9ff76;
+}
+
+#endStats{
+  margin:15px 0 22px;
+  color:#ddd;
+  line-height:1.8;
+}
+
+#message{
+  position:fixed;
+  left:50%;
+  top:53%;
+  transform:translate(-50%,-50%);
+  z-index:50;
+  color:white;
+  font-size:25px;
+  font-weight:1000;
+  text-shadow:0 3px 10px #000;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .2s;
+  text-align:center;
+}
+
+@media(max-width:700px){
+  #title{
+    font-size:15px;
+  }
+
+  #stats{
+    font-size:11px;
+  }
+
+  #healthBox{
+    width:38vw;
+    bottom:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="hud">
+  <div class="panel">
+    <div id="title">DESI DROP</div>
+    <div id="stats">
+      ❤️ <span id="hpStat">100</span>
+      &nbsp; 🔫 <span id="ammoStat">30</span>
+      &nbsp; ☠️ <span id="killStat">0</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    👥 ALIVE: <span id="aliveStat">15</span>
+    <div id="zoneText">SAFE ZONE</div>
+  </div>
+</div>
+
+<div id="message"></div>
+
+<div id="healthBox">
+  <div id="healthOuter">
+    <div id="health"></div>
+  </div>
+  <div id="healthText">100 HP</div>
+</div>
+
+<div id="controls">
+
+  <div id="joystick">
+    <div id="stick"></div>
+  </div>
+
+  <button class="action" id="fire">FIRE</button>
+  <button class="action" id="med">✚</button>
+  <button class="action" id="reload">RELOAD</button>
+
+</div>
+
+<div id="startScreen">
+  <div class="card">
+
+    <div class="logo">DESI DROP</div>
+
+    <div class="subtitle">
+      Indian Battle Royale — Trial
+    </div>
+
+    <div class="instructions">
+      🎯 Survive the shrinking safe zone<br>
+      🔫 Eliminate enemy players<br>
+      💊 Collect/use medkits<br>
+      📦 Collect ammo<br>
+      🌾 Fight across villages, farms and highways<br>
+      🏆 Be the last player alive
+    </div>
+
+    <button class="start" id="startBtn">
+      PLAY TRIAL
+    </button>
+
+  </div>
+</div>
+
+<div id="endScreen" style="display:none">
+  <div class="card">
+
+    <div id="endTitle">YOU WIN!</div>
+
+    <div id="endStats"></div>
+
+    <button class="start" id="restartBtn">
+      PLAY AGAIN
+    </button>
+
+  </div>
+</div>
+
+<script>
+
+/* =========================================================
+   DESI DROP
+   ORIGINAL BROWSER BATTLE ROYALE TRIAL
+   ========================================================= */
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let W = 0;
+let H = 0;
+
+function resize(){
+  W = canvas.width = window.innerWidth * devicePixelRatio;
+  H = canvas.height = window.innerHeight * devicePixelRatio;
+
+  canvas.style.width = window.innerWidth + "px";
+  canvas.style.height = window.innerHeight + "px";
+
+  ctx.setTransform(
+    devicePixelRatio,0,
+    0,devicePixelRatio,
+    0,0
+  );
+
+  W = window.innerWidth;
+  H = window.innerHeight;
+}
+
+window.addEventListener("resize",resize);
+resize();
+
+
+/* =========================================================
+   WORLD
+   ========================================================= */
+
+const WORLD = {
+  width:2600,
+  height:2600
+};
+
+let player;
+let bots = [];
+let bullets = [];
+let loot = [];
+let particles = [];
+
+let gameRunning = false;
+let gameOver = false;
+
+let camera = {
+  x:0,
+  y:0
+};
+
+let kills = 0;
+
+let lastTime = 0;
+let gameTime = 0;
+
+
+/* =========================================================
+   SAFE ZONE
+   ========================================================= */
+
+let zone = {
+  x:1300,
+  y:1300,
+  radius:1100,
+  targetRadius:1100,
+  timer:0,
+  phase:1
+};
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+const keys = {};
+
+window.addEventListener("keydown",e=>{
+  keys[e.key.toLowerCase()] = true;
+
+  if(e.key.toLowerCase()==="r"){
+    reload();
+  }
+
+  if(e.key.toLowerCase()==="e"){
+    useMedkit();
+  }
+});
+
+window.addEventListener("keyup",e=>{
+  keys[e.key.toLowerCase()] = false;
+});
+
+
+let joystick = {
+  active:false,
+  x:0,
+  y:0
+};
+
+const joystickEl = document.getElementById("joystick");
+const stickEl = document.getElementById("stick");
+
+function joystickMove(clientX,clientY){
+
+  const rect = joystickEl.getBoundingClientRect();
+
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top + rect.height/2;
+
+  let dx = clientX-cx;
+  let dy = clientY-cy;
+
+  const max = 45;
+
+  const len = Math.hypot(dx,dy);
+
+  if(len>max){
+    dx = dx/len*max;
+    dy = dy/len*max;
+  }
+
+  joystick.x = dx/max;
+  joystick.y = dy/max;
+
+  stickEl.style.transform =
+    `translate(${dx}px,${dy}px)`;
+}
+
+function joystickEnd(){
+
+  joystick.active=false;
+  joystick.x=0;
+  joystick.y=0;
+
+  stickEl.style.transform="translate(0,0)";
+}
+
+joystickEl.addEventListener("pointerdown",e=>{
+  joystick.active=true;
+  joystickMove(e.clientX,e.clientY);
+});
+
+window.addEventListener("pointermove",e=>{
+  if(joystick.active){
+    joystickMove(e.clientX,e.clientY);
+  }
+});
+
+window.addEventListener("pointerup",joystickEnd);
+
+
+/* =========================================================
+   AIM
+   ========================================================= */
+
+let aim = {
+  x:0,
+  y:0,
+  active:false
+};
+
+canvas.addEventListener("pointerdown",e=>{
+
+  if(!gameRunning) return;
+
+  aim.x = e.clientX;
+  aim.y = e.clientY;
+  aim.active=true;
+
+});
+
+canvas.addEventListener("pointermove",e=>{
+
+  if(aim.active){
+    aim.x=e.clientX;
+    aim.y=e.clientY;
+  }
+
+});
+
+window.addEventListener("pointerup",()=>{
+  aim.active=false;
+});
+
+
+/* =========================================================
+   FIRE BUTTON
+   ========================================================= */
+
+let firing=false;
+
+const fireBtn=document.getElementById("fire");
+
+fireBtn.addEventListener("pointerdown",()=>{
+  firing=true;
+});
+
+fireBtn.addEventListener("pointerup",()=>{
+  firing=false;
+});
+
+fireBtn.addEventListener("pointercancel",()=>{
+  firing=false;
+});
+
+fireBtn.addEventListener("pointerleave",()=>{
+  firing=false;
+});
+
+
+/* =========================================================
+   UTILITY
+   ========================================================= */
+
+function rand(min,max){
+  return Math.random()*(max-min)+min;
+}
+
+function distance(a,b){
+  return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+function clamp(v,min,max){
+  return Math.max(min,Math.min(max,v));
+}
+
+
+/* =========================================================
+   MAP OBJECTS
+   ========================================================= */
+
+let mapObjects=[];
+
+function createMap(){
+
+  mapObjects=[];
+
+  /* Roads */
+
+  mapObjects.push({
+    type:"road",
+    x:0,
+    y:1220,
+    w:2600,
+    h:150
+  });
+
+  mapObjects.push({
+    type:"road",
+    x:1150,
+    y:0,
+    w:160,
+    h:2600
+  });
+
+  /* Highway */
+
+  mapObjects.push({
+    type:"highway",
+    x:0,
+    y:1900,
+    w:2600,
+    h:100
+  });
+
+  /* Houses */
+
+  for(let i=0;i<28;i++){
+
+    const x=rand(150,2350);
+    const y=rand(150,2350);
+
+    if(
+      Math.abs(x-1230)<200 ||
+      Math.abs(y-1295)<200
+    ){
+      i--;
+      continue;
+    }
+
+    mapObjects.push({
+      type:"house",
+      x,
+      y,
+      w:rand(70,110),
+      h:rand(60,100)
+    });
+  }
+
+  /* Trees */
+
+  for(let i=0;i<120;i++){
+
+    const x=rand(50,2550);
+    const y=rand(50,2550);
+
+    mapObjects.push({
+      type:"tree",
+      x,
+      y,
+      r:rand(13,24)
+    });
+  }
+
+  /* Farm fields */
+
+  for(let i=0;i<18;i++){
+
+    const x=rand(100,2300);
+    const y=rand(100,2300);
+
+    mapObjects.push({
+      type:"field",
+      x,
+      y,
+      w:rand(140,280),
+      h:rand(100,190)
+    });
+  }
+}
+
+
+/* =========================================================
+   DRAW MAP
+   ========================================================= */
+
+function drawMap(){
+
+  ctx.fillStyle="#70a94c";
+  ctx.fillRect(0,0,W,H);
+
+  ctx.save();
+
+  ctx.translate(-camera.x,-camera.y);
+
+  /* Ground grid */
+
+  ctx.strokeStyle="rgba(30,80,25,.08)";
+  ctx.lineWidth=1;
+
+  for(let x=0;x<WORLD.width;x+=80){
+
+    ctx.beginPath();
+    ctx.moveTo(x,0);
+    ctx.lineTo(x,WORLD.height);
+    ctx.stroke();
+  }
+
+  for(let y=0;y<WORLD.height;y+=80){
+
+    ctx.beginPath();
+    ctx.moveTo(0,y);
+    ctx.lineTo(WORLD.width,y);
+    ctx.stroke();
+  }
+
+
+  /* Fields */
+
+  for(const o of mapObjects){
+
+    if(o.type!=="field") continue;
+
+    ctx.fillStyle="#a8bd4b";
+    ctx.fillRect(o.x,o.y,o.w,o.h);
+
+    ctx.strokeStyle="rgba(70,100,25,.5)";
+    ctx.strokeRect(o.x,o.y,o.w,o.h);
+
+    ctx.strokeStyle="rgba(60,100,30,.3)";
+
+    for(let x=o.x+15;x<o.x+o.w;x+=15){
+
+      ctx.beginPath();
+      ctx.moveTo(x,o.y);
+      ctx.lineTo(x,o.y+o.h);
+      ctx.stroke();
+    }
+  }
+
+
+  /* Roads */
+
+  for(const o of mapObjects){
+
+    if(o.type==="road"){
+
+      ctx.fillStyle="#b9a67e";
+      ctx.fillRect(o.x,o.y,o.w,o.h);
+
+      ctx.strokeStyle="rgba(90,70,50,.4)";
+      ctx.strokeRect(o.x,o.y,o.w,o.h);
+    }
+
+    if(o.type==="highway"){
+
+      ctx.fillStyle="#4e4e4b";
+      ctx.fillRect(o.x,o.y,o.w,o.h);
+
+      ctx.strokeStyle="#ded4a0";
+      ctx.lineWidth=4;
+
+      ctx.setLineDash([35,25]);
+
+      ctx.beginPath();
+      ctx.moveTo(o.x,o.y+o.h/2);
+      ctx.lineTo(o.x+o.w,o.y+o.h/2);
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+    }
+  }
+
+
+  /* Houses */
+
+  for(const o of mapObjects){
+
+    if(o.type!=="house") continue;
+
+    ctx.fillStyle="#d8b27b";
+    ctx.fillRect(o.x,o.y,o.w,o.h);
+
+    ctx.fillStyle="#8d4030";
+
+    ctx.beginPath();
+    ctx.moveTo(o.x-8,o.y);
+    ctx.lineTo(o.x+o.w/2,o.y-30);
+    ctx.lineTo(o.x+o.w+8,o.y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle="#5a3825";
+    ctx.fillRect(
+      o.x+o.w*.42,
+      o.y+o.h*.55,
+      o.w*.18,
+      o.h*.45
+    );
+
+    ctx.fillStyle="#7ab0d0";
+
+    ctx.fillRect(
+      o.x+10,
+      o.y+15,
+      18,
+      16
+    );
+  }
+
+
+  /* Trees */
+
+  for(const o of mapObjects){
+
+    if(o.type!=="tree") continue;
+
+    ctx.fillStyle="#70472b";
+    ctx.fillRect(
+      o.x-4,
+      o.y+o.r*.5,
+      8,
+      o.r*1.4
+    );
+
+    ctx.fillStyle="#286b2c";
+
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.fillStyle="#3f8837";
+
+    ctx.beginPath();
+    ctx.arc(
+      o.x-o.r*.35,
+      o.y-o.r*.2,
+      o.r*.55,
+      0,
+      Math.PI*2
+    );
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+
+/* =========================================================
+   PLAYER
+   ========================================================= */
+
+function createPlayer(){
+
+  player={
+    x:1300,
+    y:1500,
+    r:17,
+
+    speed:190,
+
+    health:100,
+    maxHealth:100,
+
+    ammo:30,
+    maxAmmo:30,
+
+    reserveAmmo:90,
+
+    medkits:2,
+
+    fireCooldown:0,
+
+    angle:0,
+
+    alive:true
+  };
+}
+
+
+/* =========================================================
+   BOTS
+   ========================================================= */
+
+function createBots(){
+
+  bots=[];
+
+  for(let i=0;i<14;i++){
+
+    let angle=rand(0,Math.PI*2);
+    let radius=rand(350,1000);
+
+    bots.push({
+      id:i,
+
+      x:1300+Math.cos(angle)*radius,
+      y:1300+Math.sin(angle)*radius,
+
+      r:16,
+
+      speed:rand(85,125),
+
+      health:100,
+
+      angle:0,
+
+      fireCooldown:rand(0,2),
+
+      target:null,
+
+      alive:true,
+
+      color:Math.random()>.5 ?
+        "#d95b45":
+        "#4c76c9"
+    });
+  }
+}
+
+
+/* =========================================================
+   LOOT
+   ========================================================= */
+
+function createLoot(){
+
+  loot=[];
+
+  for(let i=0;i<32;i++){
+
+    const type =
+      Math.random()<.55 ?
+      "ammo":
+      "med";
+
+    loot.push({
+      x:rand(100,2500),
+      y:rand(100,2500),
+      type,
+      r:12,
+      active:true
+    });
+  }
+}
+
+
+/* =========================================================
+   PARTICLES
+   ========================================================= */
+
+function particle(x,y,color){
+
+  particles.push({
+    x,
+    y,
+    life:.5,
+    maxLife:.5,
+    vx:rand(-70,70),
+    vy:rand(-70,70),
+    color
+  });
+}
+
+
+/* =========================================================
+   BULLET
+   ========================================================= */
+
+function shoot(shooter,isPlayer){
+
+  if(isPlayer){
+
+    if(player.ammo<=0){
+      showMessage("NO AMMO — RELOAD");
+      return;
+    }
+
+    if(player.fireCooldown>0) return;
+
+    player.ammo--;
+
+    player.fireCooldown=.16;
+
+    const angle=player.angle;
+
+    bullets.push({
+      x:player.x+Math.cos(angle)*20,
+      y:player.y+Math.sin(angle)*20,
+
+      vx:Math.cos(angle)*650,
+      vy:Math.sin(angle)*650,
+
+      owner:"player",
+
+      damage:25,
+
+      life:1
+    });
+
+  }else{
+
+    if(shooter.fireCooldown>0) return;
+
+    shooter.fireCooldown=rand(.7,1.5);
+
+    const angle=shooter.angle;
+
+    bullets.push({
+      x:shooter.x+Math.cos(angle)*20,
+      y:shooter.y+Math.sin(angle)*20,
+
+      vx:Math.cos(angle)*480,
+      vy:Math.sin(angle)*480,
+
+      owner:"bot",
+
+      damage:10,
+
+      life:1.5
+    });
+  }
+}
+
+
+/* =========================================================
+   RELOAD
+   ========================================================= */
+
+function reload(){
+
+  if(player.ammo>=player.maxAmmo) return;
+
+  if(player.reserveAmmo<=0){
+    showMessage("NO RESERVE AMMO");
+    return;
+  }
+
+  const need=player.maxAmmo-player.ammo;
+
+  const amount=Math.min(
+    need,
+    player.reserveAmmo
+  );
+
+  player.ammo+=amount;
+  player.reserveAmmo-=amount;
+
+  showMessage("RELOADED");
+}
+
+
+/* =========================================================
+   MEDKIT
+   ========================================================= */
+
+function useMedkit(){
+
+  if(player.medkits<=0){
+    showMessage("NO MEDKIT");
+    return;
+  }
+
+  if(player.health>=100){
+    showMessage("HEALTH FULL");
+    return;
+  }
+
+  player.health=Math.min(
+    100,
+    player.health+50
+  );
+
+  player.medkits--;
+
+  showMessage("+50 HEALTH");
+}
+
+
+/* =========================================================
+   MOVEMENT
+   ========================================================= */
+
+function updatePlayer(dt){
+
+  if(!player.alive) return;
+
+  let dx=0;
+  let dy=0;
+
+  if(keys["w"]||keys["arrowup"]) dy-=1;
+  if(keys["s"]||keys["arrowdown"]) dy+=1;
+  if(keys["a"]||keys["arrowleft"]) dx-=1;
+  if(keys["d"]||keys["arrowright"]) dx+=1;
+
+  dx+=joystick.x;
+  dy+=joystick.y;
+
+  const len=Math.hypot(dx,dy);
+
+  if(len>0){
+
+    dx/=len;
+    dy/=len;
+
+    player.x+=dx*player.speed*dt;
+    player.y+=dy*player.speed*dt;
+
+    if(!aim.active){
+      player.angle=Math.atan2(dy,dx);
+    }
+  }
+
+  player.x=clamp(
+    player.x,
+    player.r,
+    WORLD.width-player.r
+  );
+
+  player.y=clamp(
+    player.y,
+    player.r,
+    WORLD.height-player.r
+  );
+
+
+  if(aim.active){
+
+    const worldX=aim.x+camera.x;
+    const worldY=aim.y+camera.y;
+
+    player.angle=Math.atan2(
+      worldY-player.y,
+      worldX-player.x
+    );
+  }
+
+  if(firing){
+    shoot(player,true);
+  }
+
+  if(player.fireCooldown>0){
+    player.fireCooldown-=dt;
+  }
+}
+
+
+/* =========================================================
+   BOT AI
+   ========================================================= */
+
+function updateBots(dt){
+
+  for(const bot of bots){
+
+    if(!bot.alive) continue;
+
+    bot.fireCooldown-=dt;
+
+    const d=distance(bot,player);
+
+    if(d<650){
+
+      bot.target=player;
+
+      bot.angle=Math.atan2(
+        player.y-bot.y,
+        player.x-bot.x
+      );
+
+      if(d>260){
+
+        bot.x+=
+          Math.cos(bot.angle)*
+          bot.speed*dt;
+
+        bot.y+=
+          Math.sin(bot.angle)*
+          bot.speed*dt;
+
+      }else{
+
+        const side=bot.id%2===0?1:-1;
+
+        bot.x+=
+          Math.cos(bot.angle+Math.PI/2*side)*
+          bot.speed*.65*dt;
+
+        bot.y+=
+          Math.sin(bot.angle+Math.PI/2*side)*
+          bot.speed*.65*dt;
+      }
+
+      if(d<550){
+        shoot(bot,false);
+      }
+
+    }else{
+
+      if(!bot.wander){
+        bot.wander={
+          x:rand(300,2300),
+          y:rand(300,2300)
+        };
+      }
+
+      const a=Math.atan2(
+        bot.wander.y-bot.y,
+        bot.wander.x-bot.x
+      );
+
+      bot.x+=Math.cos(a)*bot.speed*.45*dt;
+      bot.y+=Math.sin(a)*bot.speed*.45*dt;
+
+      if(
+        Math.hypot(
+          bot.wander.x-bot.x,
+          bot.wander.y-bot.y
+        )<40
+      ){
+        bot.wander=null;
+      }
+    }
+
+    bot.x=clamp(bot.x,20,WORLD.width-20);
+    bot.y=clamp(bot.y,20,WORLD.height-20);
+
+
+    /* Zone damage */
+
+    const zd=Math.hypot(
+      
