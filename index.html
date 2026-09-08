@@ -1,132 +1,329 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>DESI DROP - Working 3D Test</title>
+<title>DESI DROP — Real 3D Character Test</title>
 <style>
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#79a8c2;touch-action:none;font-family:Arial}
-#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
-#start{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:#142330;color:#fff}
-.panel{width:min(88%,400px);padding:30px;text-align:center;background:#10161c;border-radius:20px}
-h1{margin:0 0 8px;font-size:38px}p{opacity:.8}
-#enter{padding:16px 35px;border:0;border-radius:12px;background:#f0b400;font-size:19px;font-weight:900}
-#hud{position:fixed;inset:0;pointer-events:none;color:white;text-shadow:0 2px 3px #000}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#7ca9c0;font-family:Arial,sans-serif;touch-action:none}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#start{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:linear-gradient(#172b3c,#111a13);color:#fff}
+.panel{width:min(90%,430px);padding:30px;border-radius:20px;background:#10161c;text-align:center;box-shadow:0 20px 70px #000}
+h1{font-size:40px;margin:0 0 8px}p{opacity:.78;line-height:1.45}
+#enter{padding:16px 34px;border:0;border-radius:12px;background:#efb400;color:#111;font-size:19px;font-weight:900}
+#hud{position:fixed;inset:0;pointer-events:none;color:#fff;text-shadow:0 2px 3px #000}
 #top{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between}
-.badge{background:#0008;padding:8px 10px;border-radius:9px;font-weight:bold}
-#cross{position:absolute;left:50%;top:50%;font-size:28px;transform:translate(-50%,-50%)}
-#hint{position:absolute;top:57px;left:50%;transform:translateX(-50%);background:#0007;padding:7px 10px;border-radius:9px;white-space:nowrap}
-#joy{position:absolute;left:20px;bottom:25px;width:125px;height:125px;border:2px solid #fff6;border-radius:50%;background:#fff2;pointer-events:auto}
-#stick{position:absolute;width:54px;height:54px;left:33px;top:33px;border-radius:50%;background:#fff7}
-.btn{position:absolute;pointer-events:auto;width:58px;height:58px;border-radius:50%;border:2px solid #fff7;background:#0008;color:#fff;font-weight:bold}
-#fire{right:25px;bottom:42px;width:72px;height:72px;background:#a52222cc}
-#jump{right:108px;bottom:105px}#run{left:165px;bottom:42px}#crouch{right:180px;bottom:42px}#reload{right:30px;bottom:120px}
+.badge{background:#0009;padding:8px 11px;border-radius:10px;font-weight:800}
+#hint{position:absolute;top:56px;left:50%;transform:translateX(-50%);background:#0008;padding:7px 12px;border-radius:10px;white-space:nowrap}
+#cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:27px}
+#joy{position:absolute;left:20px;bottom:24px;width:124px;height:124px;border-radius:50%;border:2px solid #fff6;background:#fff2;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+#stick{position:absolute;left:33px;top:33px;width:54px;height:54px;border-radius:50%;background:#fff7}
+.btn{position:absolute;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;width:56px;height:56px;border-radius:50%;border:2px solid #fff7;background:#0009;color:#fff;font-size:10px;font-weight:900}
+#fire{right:24px;bottom:40px;width:74px;height:74px;background:#a52222dd;font-size:12px}
+#jump{right:112px;bottom:108px}
+#run{left:160px;bottom:40px}
+#crouch{right:184px;bottom:40px}
+#reload{right:30px;bottom:124px;font-size:20px}
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div id="start"><div class="panel">
-<h1>DESI DROP</h1>
-<p>WORKING 3D CONTROLLER TEST</p>
-<p>Character + joystick + 360° camera + target</p>
-<button id="enter">ENTER ISLAND</button>
-</div></div>
+<canvas id="game"></canvas>
+
+<div id="start">
+ <div class="panel">
+  <h1>DESI DROP</h1>
+  <p>REAL 3D CHARACTER TEST</p>
+  <p>Third-person camera • mobile controls • original low-poly battle-royale character</p>
+  <button id="enter">ENTER ISLAND</button>
+ </div>
+</div>
+
 <div id="hud">
-<div id="top"><div class="badge">DESI DROP • TEST</div><div class="badge">AMMO <span id="ammo">30</span></div></div>
-<div id="hint">ENTER → then move the LEFT joystick</div>
-<div id="cross">+</div>
-<div id="joy"><div id="stick"></div></div>
-<button class="btn" id="fire">FIRE</button>
-<button class="btn" id="jump">JUMP</button>
-<button class="btn" id="run">RUN</button>
-<button class="btn" id="crouch">CROUCH</button>
-<button class="btn" id="reload">↻</button>
+ <div id="top">
+  <div class="badge">DESI DROP • TEST</div>
+  <div class="badge">AMMO <span id="ammo">30</span></div>
+ </div>
+ <div id="hint">JOYSTICK = MOVE • DRAG RIGHT SIDE = LOOK</div>
+ <div id="pos" class="badge" style="position:absolute;top:92px;left:12px;font-size:12px;opacity:.8">POS 0,24</div>
+ <div id="cross">+</div>
+ <div id="joy"><div id="stick"></div></div>
+ <button class="btn" id="fire">FIRE</button>
+ <button class="btn" id="jump">JUMP</button>
+ <button class="btn" id="run">RUN</button>
+ <button class="btn" id="crouch">CROUCH</button>
+ <button class="btn" id="reload">↻</button>
 </div>
 
 <script>
+(() => {
 "use strict";
 
-/* ---------- tiny software 3D renderer ---------- */
-const canvas=document.getElementById("c");
-const ctx=canvas.getContext("2d");
-let W=0,H=0,DPR=1;
-function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*DPR;canvas.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0)}
-addEventListener("resize",resize);resize();
-
-const objects=[];
-function addCube(x,y,z,w,h,d,color){
- objects.push({type:"cube",x,y,z,w,h,d,color});
-}
-function addSphere(x,y,z,r,color){
- objects.push({type:"sphere",x,y,z,r,color});
+const canvas=document.getElementById("game");
+const gl=canvas.getContext("webgl",{antialias:true});
+if(!gl){
+  document.querySelector("#start p").textContent="WebGL is not available in this browser.";
+  throw new Error("WebGL unavailable");
 }
 
-/* Static world is created ONCE, not every frame. */
-addCube(0,-2,0,500,4,500,"#477d45");
-addCube(0,-.02,0,500,.08,9,"#45484a");
-addCube(0,-.01,0,9,.08,500,"#45484a");
+/* ---------- tiny real 3D renderer ---------- */
+const VS=`
+attribute vec3 aPosition;
+attribute vec3 aNormal;
+uniform mat4 uMVP;
+uniform mat4 uModel;
+varying vec3 vNormal;
+varying vec3 vWorld;
+void main(){
+ vec4 world=uModel*vec4(aPosition,1.0);
+ vWorld=world.xyz;
+ vNormal=mat3(uModel)*aNormal;
+ gl_Position=uMVP*vec4(aPosition,1.0);
+}`;
+const FS=`
+precision mediump float;
+uniform vec3 uColor;
+uniform vec3 uLight;
+varying vec3 vNormal;
+varying vec3 vWorld;
+void main(){
+ float light=max(dot(normalize(vNormal),normalize(uLight)),0.0);
+ float shade=0.38+light*0.62;
+ float fog=clamp((length(vWorld.xz)-110.0)/260.0,0.0,1.0);
+ vec3 c=uColor*shade;
+ c=mix(c,vec3(.46,.62,.69),fog*.38);
+ gl_FragColor=vec4(c,1.0);
+}`;
+function compile(type,src){
+ const sh=gl.createShader(type);
+ gl.shaderSource(sh,src);gl.compileShader(sh);
+ if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(sh));
+ return sh;
+}
+const program=gl.createProgram();
+gl.attachShader(program,compile(gl.VERTEX_SHADER,VS));
+gl.attachShader(program,compile(gl.FRAGMENT_SHADER,FS));
+gl.linkProgram(program);
+if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
+gl.useProgram(program);
+const aPosition=gl.getAttribLocation(program,"aPosition");
+const aNormal=gl.getAttribLocation(program,"aNormal");
+const uMVP=gl.getUniformLocation(program,"uMVP");
+const uModel=gl.getUniformLocation(program,"uModel");
+const uColor=gl.getUniformLocation(program,"uColor");
+const uLight=gl.getUniformLocation(program,"uLight");
 
-/* simple road markings */
-for(let x=-220;x<=220;x+=20)addCube(x,.05,0,8,.03,.25,"#d4bd67");
-for(let z=-220;z<=220;z+=20)addCube(0,.05,z,.25,.03,8,"#d4bd67");
+function geometry(verts,normals,indices){
+ const v=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,v);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(verts),gl.STATIC_DRAW);
+ const n=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,n);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(normals),gl.STATIC_DRAW);
+ const i=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,i);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(indices),gl.STATIC_DRAW);
+ return {v,n,i,count:indices.length};
+}
+function cubeGeom(){
+ const V=[
+  [-.5,-.5,-.5],[.5,-.5,-.5],[.5,.5,-.5],[-.5,.5,-.5],
+  [-.5,-.5,.5],[.5,-.5,.5],[.5,.5,.5],[-.5,.5,.5]];
+ const faces=[
+  [0,1,2,3,0,0,-1],[4,7,6,5,0,0,1],[0,4,5,1,0,-1,0],
+  [3,2,6,7,0,1,0],[0,3,7,4,-1,0,0],[1,5,6,2,1,0,0]];
+ let v=[],n=[],ind=[];
+ for(let f=0;f<faces.length;f++){
+  const q=faces[f],b=f*4;
+  for(let j=0;j<4;j++){v.push(...V[q[j]]);n.push(q[4],q[5],q[6])}
+  ind.push(b,b+1,b+2,b,b+2,b+3);
+ }
+ return geometry(v,n,ind);
+}
+function cylGeom(segments=10){
+ const v=[],n=[],ind=[];
+ for(let y=0;y<=1;y++)for(let i=0;i<segments;i++){
+  const a=i*Math.PI*2/segments,c=Math.cos(a),s=Math.sin(a);
+  v.push(c,y-.5,s);n.push(c,0,s);
+ }
+ for(let i=0;i<segments;i++){
+  const a=i,b=(i+1)%segments;
+  ind.push(a,b,segments+b,a,segments+b,segments+a);
+ }
+ return geometry(v,n,ind);
+}
+function sphereGeom(){
+ const seg=12,rows=8,v=[],n=[],ind=[];
+ for(let y=0;y<=rows;y++){
+  const a=y*Math.PI/rows,sy=Math.cos(a),r=Math.sin(a);
+  for(let x=0;x<=seg;x++){
+   const b=x*Math.PI*2/seg,c=Math.cos(b),s=Math.sin(b);
+   v.push(r*c,sy,r*s);n.push(r*c,sy,r*s);
+  }
+ }
+ for(let y=0;y<rows;y++)for(let x=0;x<seg;x++){
+  const a=y*(seg+1)+x,b=a+seg+1;ind.push(a,b,a+1,b,b+1,a+1);
+ }
+ return geometry(v,n,ind);
+}
+const CUBE=cubeGeom(),CYL=cylGeom(),SPHERE=sphereGeom();
 
-/* buildings */
-[
- [-70,2,-55,22,4,16],[-35,2,-55,18,4,14],[55,2,-50,24,4,16],
- [90,2,25,20,4,15],[-75,2,65,24,4,16],[35,2,75,18,4,14]
-].forEach(a=>addCube(a[0],a[1],a[2],a[3],a[4],a[5],"#b79d78"));
-
-/* trees */
-for(let i=0;i<28;i++){
- const x=((i*71)%400)-200,z=((i*113)%360)-180;
- addCube(x,2,z,.7,4,.7,"#65452b");
- addSphere(x,6,z,3,"#2f6634");
+function I(){return new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])}
+function mul(a,b){
+ const o=new Float32Array(16);
+ for(let c=0;c<4;c++)for(let r=0;r<4;r++)o[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];
+ return o;
+}
+function T(x,y,z){const m=I();m[12]=x;m[13]=y;m[14]=z;return m}
+function S(x,y,z){const m=I();m[0]=x;m[5]=y;m[10]=z;return m}
+function RY(a){const m=I(),c=Math.cos(a),s=Math.sin(a);m[0]=c;m[2]=-s;m[8]=s;m[10]=c;return m}
+function RX(a){const m=I(),c=Math.cos(a),s=Math.sin(a);m[5]=c;m[6]=s;m[9]=-s;m[10]=c;return m}
+function perspective(fov,aspect,near,far){
+ const t=1/Math.tan(fov/2),m=new Float32Array(16);
+ m[0]=t/aspect;m[5]=t;m[10]=(far+near)/(near-far);m[11]=-1;m[14]=2*far*near/(near-far);return m;
+}
+function camera(eye,target){
+ let z=[eye[0]-target[0],eye[1]-target[1],eye[2]-target[2]];
+ let zl=Math.hypot(...z);z=z.map(v=>v/zl);
+ let x=[z[2],0,-z[0]],xl=Math.hypot(...x);x=x.map(v=>v/xl);
+ let y=[z[1]*x[2]-z[2]*x[1],z[2]*x[0]-z[0]*x[2],z[0]*x[1]-z[1]*x[0]];
+ const m=I();
+ m[0]=x[0];m[1]=y[0];m[2]=z[0];
+ m[4]=x[1];m[5]=y[1];m[6]=z[1];
+ m[8]=x[2];m[9]=y[2];m[10]=z[2];
+ m[12]=-(x[0]*eye[0]+x[1]*eye[1]+x[2]*eye[2]);
+ m[13]=-(y[0]*eye[0]+y[1]*eye[1]+y[2]*eye[2]);
+ m[14]=-(z[0]*eye[0]+z[1]*eye[1]+z[2]*eye[2]);
+ return m;
 }
 
-/* training target */
-addCube(20,1.1,0,1.2,2.2,.55,"#a72b2b");
-addSphere(20,2.65,0,.48,"#d08f6b");
-addCube(20,.4,0,.15,.8,.15,"#555b60");
-addCube(20,.05,0,1.3,.1,1.3,"#242629");
+let VP=I();
+function draw(g,model,color){
+ gl.bindBuffer(gl.ARRAY_BUFFER,g.v);gl.enableVertexAttribArray(aPosition);gl.vertexAttribPointer(aPosition,3,gl.FLOAT,false,0,0);
+ gl.bindBuffer(gl.ARRAY_BUFFER,g.n);gl.enableVertexAttribArray(aNormal);gl.vertexAttribPointer(aNormal,3,gl.FLOAT,false,0,0);
+ gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,g.i);
+ gl.uniformMatrix4fv(uMVP,false,mul(VP,model));
+ gl.uniformMatrix4fv(uModel,false,model);
+ gl.uniform3fv(uColor,color);
+ gl.drawElements(gl.TRIANGLES,g.count,gl.UNSIGNED_SHORT,0);
+}
+function part(g,x,y,z,sx,sy,sz,color,rot=0){
+ draw(g,mul(T(x,y,z),mul(RY(rot),S(sx,sy,sz))),color);
+}
 
-/* player state */
-let px=0,py=0,pz=18;
-let yaw=0,pitch=.18,vy=0;
-let grounded=true,running=false,crouched=false,started=false;
-let ammo=30;
+/* ---------- player ---------- */
+let px=0,py=0,pz=24,yaw=0,pitch=.22,vy=0,grounded=true;
+let running=false,crouched=false,started=false,ammo=30;
+const SKIN=[.72,.42,.27],SHIRT=[.08,.18,.34],PANTS=[.07,.08,.10],BOOT=[.025,.03,.035],GUN=[.04,.045,.05];
 
-/* input */
+function player(){
+ const h=crouched?.78:1;
+ /* feet/legs */
+ part(CYL,px-.22,py+.62,pz,.30,.95,.30,PANTS,yaw);
+ part(CYL,px+.22,py+.62,pz,.30,.95,.30,PANTS,yaw);
+ part(CUBE,px-.22,py+.12,pz+.12,.34,.18,.55,BOOT,yaw);
+ part(CUBE,px+.22,py+.12,pz+.12,.34,.18,.55,BOOT,yaw);
+ /* torso and waist */
+ part(CUBE,px,py+1.35*h,pz,.78,1.05*h,.48,SHIRT,yaw);
+ part(CUBE,px,py+.92,pz,.67,.25,.44,PANTS,yaw);
+ /* neck/head/hair */
+ part(CYL,px,py+1.98*h,pz,.23,.20,.23,SKIN,yaw);
+ part(SPHERE,px,py+2.30*h,pz,.38,.38,.36,SKIN,0);
+ part(SPHERE,px,py+2.45*h,pz,.39,.18,.38,[.025,.025,.03],0);
+ /* shoulders/arms/hands */
+ for(const side of [-1,1]){
+   part(SPHERE,px+side*.47,py+1.70*h,pz,.20,.20,.20,SHIRT,yaw);
+   part(CYL,px+side*.53,py+1.43*h,pz+.03,.14,.58,.14,SHIRT,yaw+side*.08);
+   part(CYL,px+side*.48,py+1.10*h,pz+.12,.13,.45,.13,SHIRT,yaw+side*.04);
+   part(SPHERE,px+side*.44,py+.96*h,pz+.16,.14,.14,.14,SKIN,0);
+ }
+ /* chest strap */
+ part(CUBE,px+.20,py+1.45*h,pz+.25,.10,1.20*h,.08,[.03,.04,.05],yaw-.25);
+ /* rifle */
+ part(CUBE,px+.45,py+1.30*h,pz+.40,.14,.14,1.15,GUN,yaw+Math.PI/2);
+ part(CUBE,px+.45,py+1.30*h,pz+.02,.28,.20,.42,[.12,.13,.14],yaw+Math.PI/2);
+ part(CUBE,px+.45,py+1.08*h,pz+.03,.12,.32,.18,GUN,yaw+Math.PI/2);
+}
+
+function target(){
+ const x=18,z=3;
+ part(CYL,x,.55,z,.11,1.1,.11,[.25,.27,.29],0);
+ part(CUBE,x,1.35,z,.80,1.60,.50,[.62,.08,.08],0);
+ part(SPHERE,x,2.35,z,.38,.38,.38,SKIN,0);
+ part(CUBE,x,.05,z,1.25,.10,1.25,[.05,.05,.055],0);
+}
+
+/* ---------- world ---------- */
+const world=[];
+function W(g,x,y,z,sx,sy,sz,c,r=0){world.push({g,x,y,z,sx,sy,sz,c,r})}
+W(CUBE,0,-3,0,500,6,500,[.20,.39,.18]);
+W(CUBE,0,.02,0,500,.08,10,[.25,.25,.26]);
+W(CUBE,0,.03,0,10,.08,500,[.25,.25,.26]);
+
+const buildings=[
+[-85,3,-60,22,6,16],[ -45,3,-60,18,6,14],[60,3,-55,26,6,17],
+[95,3,25,20,6,15],[-70,3,65,25,6,17],[35,3,80,18,6,14]
+];
+for(const a of buildings){
+ W(CUBE,a[0],a[1],a[2],a[3],a[4],a[5],[.58,.48,.35],(a[0]>0?.08:0));
+ W(CUBE,a[0],a[1]+4,a[2],a[3]+1,1.4,a[5]+1,[.30,.12,.09],(a[0]>0?.08:0));
+}
+for(let i=0;i<34;i++){
+ const x=(i*67%390)-195,z=(i*113%350)-175;
+ W(CYL,x,2,z,.55,4,.55,[.28,.15,.07]);
+ W(SPHERE,x,6,z,3.0,3.4,3.0,[.08,.28,.11]);
+}
+for(let i=0;i<10;i++){
+ const a=i*Math.PI*2/10;
+ W(SPHERE,Math.cos(a)*125,7,Math.sin(a)*125,25,14,25,[.29,.36,.24]);
+}
+
+/* ---------- controls ---------- */
 const keys={};
 addEventListener("keydown",e=>{keys[e.key.toLowerCase()]=true;if(e.code==="Space")jump();if(e.key.toLowerCase()==="r")reload()});
 addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
 
-let jx=0,jy=0,jActive=false;
+let jx=0,jy=0,jOn=false,jPointer=null;
 const joy=document.getElementById("joy"),stick=document.getElementById("stick");
-function joySet(e){
- const r=joy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
- let x=e.clientX-cx,y=e.clientY-cy,l=Math.hypot(x,y),m=48;
- if(l>m){x=x/l*m;y=y/l*m}
- jx=x/m;jy=y/m;stick.style.transform=`translate(${x}px,${y}px)`;
+function setJoy(e){
+ const r=joy.getBoundingClientRect();
+ let x=e.clientX-(r.left+r.width/2), y=e.clientY-(r.top+r.height/2);
+ const max=46, len=Math.hypot(x,y);
+ if(len>max){x=x/len*max;y=y/len*max;}
+ jx=x/max; jy=y/max;
+ stick.style.transform=`translate(${x}px,${y}px)`;
 }
-joy.addEventListener("pointerdown",e=>{jActive=true;joy.setPointerCapture(e.pointerId);joySet(e)});
-joy.addEventListener("pointermove",e=>{if(jActive)joySet(e)});
-function joyOff(){jActive=false;jx=0;jy=0;stick.style.transform="translate(0,0)"}
-joy.addEventListener("pointerup",joyOff);joy.addEventListener("pointercancel",joyOff);
+function stopJoy(){
+ jOn=false;jPointer=null;jx=0;jy=0;
+ stick.style.transform="translate(0,0)";
+}
+joy.addEventListener("pointerdown",e=>{
+ e.preventDefault();
+ jOn=true;jPointer=e.pointerId;
+ try{joy.setPointerCapture(e.pointerId)}catch(_){ }
+ setJoy(e);
+},{passive:false});
+joy.addEventListener("pointermove",e=>{if(jOn&&e.pointerId===jPointer){e.preventDefault();setJoy(e)}},{passive:false});
+joy.addEventListener("pointerup",e=>{if(e.pointerId===jPointer)stopJoy()});
+joy.addEventListener("pointercancel",stopJoy);
+joy.addEventListener("lostpointercapture",()=>{if(jOn)stopJoy()});
 
-/* right side camera swipe — 360° */
-let look=false,lx=0,ly=0;
+document.addEventListener("pointermove",e=>{if(jOn&&e.pointerId===jPointer)setJoy(e)},{passive:false});
+document.addEventListener("pointerup",e=>{if(jOn&&e.pointerId===jPointer)stopJoy()});
+
+let look=false,lx=0,ly=0,lookPointer=null;
 canvas.addEventListener("pointerdown",e=>{
- if(e.clientX>innerWidth*.35){look=true;lx=e.clientX;ly=e.clientY;canvas.setPointerCapture(e.pointerId)}
-});
+ if(!started)return;
+ if(e.clientX>innerWidth*.40){
+   e.preventDefault();look=true;lookPointer=e.pointerId;lx=e.clientX;ly=e.clientY;
+   try{canvas.setPointerCapture(e.pointerId)}catch(_){ }
+ }
+},{passive:false});
 canvas.addEventListener("pointermove",e=>{
- if(!look)return;
+ if(!look||e.pointerId!==lookPointer)return;
+ e.preventDefault();
  yaw-=(e.clientX-lx)*.012;
- pitch-=(e.clientY-ly)*.008;
- pitch=Math.max(-.85,Math.min(.85,pitch));
+ pitch-=(e.clientY-ly)*.009;
+ pitch=Math.max(-.95,Math.min(.95,pitch));
  lx=e.clientX;ly=e.clientY;
-});
-canvas.addEventListener("pointerup",()=>look=false);
-canvas.addEventListener("pointercancel",()=>look=false);
+},{passive:false});
+function stopLook(e){if(!e||e.pointerId===lookPointer){look=false;lookPointer=null}}
+canvas.addEventListener("pointerup",stopLook);
+canvas.addEventListener("pointercancel",stopLook);
+canvas.addEventListener("lostpointercapture",()=>{look=false;lookPointer=null});
 
 function jump(){if(grounded){vy=7;grounded=false}}
 function reload(){ammo=30;document.getElementById("ammo").textContent=ammo}
@@ -135,7 +332,6 @@ function fire(){if(ammo>0){ammo--;document.getElementById("ammo").textContent=am
 document.getElementById("enter").addEventListener("click",()=>{
  started=true;
  document.getElementById("start").style.display="none";
- document.getElementById("hint").textContent="LEFT = MOVE • RIGHT SWIPE = 360° LOOK";
 });
 document.getElementById("fire").addEventListener("pointerdown",fire);
 document.getElementById("jump").addEventListener("pointerdown",jump);
@@ -143,96 +339,51 @@ document.getElementById("reload").addEventListener("pointerdown",reload);
 document.getElementById("run").addEventListener("pointerdown",e=>{running=!running;e.currentTarget.textContent=running?"STOP":"RUN"});
 document.getElementById("crouch").addEventListener("pointerdown",e=>{crouched=!crouched;e.currentTarget.textContent=crouched?"STAND":"CROUCH"});
 
-/* camera projection */
-function project(x,y,z){
- const sy=Math.sin(yaw),cy=Math.cos(yaw);
- let dx=x-px,dz=z-pz;
- let camX=dx*cy-dz*sy;
- let camZ=dx*sy+dz*cy;
- let camY=y-(py+1.35);
- const cp=Math.cos(pitch),sp=Math.sin(pitch);
- const yy=camY*cp-camZ*sp;
- const zz=camY*sp+camZ*cp;
- if(zz<=.15)return null;
- const f=(scoped?1.45:1.0)*Math.min(W,H);
- return {x:W/2+camX*f/zz,y:H/2-yy*f/zz,z:zz,scale:f/zz};
-}
-let scoped=false;
-document.getElementById("hint").addEventListener("dblclick",()=>{});
-function drawWorld(){
- const visible=[];
- for(const o of objects){
-   const q=project(o.x,o.y,o.z);if(q)visible.push({o,q});
- }
- visible.sort((a,b)=>b.q.z-a.q.z);
- for(const {o,q} of visible){
-   if(o.type==="cube"){
-     const w=o.w*q.scale/2,h=o.h*q.scale,d=o.d*q.scale;
-     ctx.fillStyle=o.color;
-     ctx.fillRect(q.x-w,q.y-h/2,w*2,h);
-     ctx.fillStyle="rgba(0,0,0,.16)";
-     ctx.fillRect(q.x-w,q.y+h/2,w*2,Math.max(2,d*.08));
-   }else{
-     ctx.fillStyle=o.color;
-     ctx.beginPath();ctx.arc(q.x,q.y,o.r*q.scale,0,Math.PI*2);ctx.fill();
-   }
- }
-}
-function drawPlayer(){
- const q=project(px,py+1.35,pz);if(!q)return;
- const s=q.scale;
- /* shadow */
- ctx.fillStyle="rgba(0,0,0,.25)";ctx.beginPath();ctx.ellipse(q.x,q.y+1.25*s,1.0*s,.28*s,0,0,Math.PI*2);ctx.fill();
- /* legs */
- ctx.fillStyle="#171b22";
- ctx.fillRect(q.x-.43*s,q.y+.25*s,.34*s,.95*s);
- ctx.fillRect(q.x+.09*s,q.y+.25*s,.34*s,.95*s);
- /* torso */
- ctx.fillStyle="#263e67";
- ctx.fillRect(q.x-.62*s,q.y-.65*s,1.24*s,1.05*s);
- /* shoulders */
- ctx.fillStyle="#304b78";
- ctx.fillRect(q.x-.78*s,q.y-.57*s,1.56*s,.35*s);
- /* arms */
- ctx.fillStyle="#263e67";
- ctx.fillRect(q.x-.92*s,q.y-.42*s,.25*s,.85*s);
- ctx.fillRect(q.x+.67*s,q.y-.42*s,.25*s,.85*s);
- /* hands */
- ctx.fillStyle="#c88c69";
- ctx.beginPath();ctx.arc(q.x-.79*s,q.y+.45*s,.16*s,0,Math.PI*2);ctx.fill();
- ctx.beginPath();ctx.arc(q.x+.79*s,q.y+.45*s,.16*s,0,Math.PI*2);ctx.fill();
- /* neck + head */
- ctx.fillStyle="#c88c69";ctx.fillRect(q.x-.16*s,q.y-1.02*s,.32*s,.28*s);
- ctx.beginPath();ctx.arc(q.x,q.y-1.28*s,.43*s,0,Math.PI*2);ctx.fill();
- /* hair */
- ctx.fillStyle="#17191c";ctx.beginPath();ctx.arc(q.x,q.y-1.45*s,.44*s,Math.PI,Math.PI*2);ctx.fill();
- /* rifle */
- ctx.strokeStyle="#17191b";ctx.lineWidth=Math.max(2,5*s);ctx.beginPath();
- ctx.moveTo(q.x-.55*s,q.y+.10*s);ctx.lineTo(q.x+.65*s,q.y+.55*s);ctx.stroke();
-}
+/* ---------- game ---------- */
 function update(dt){
+ // Keyboard + mobile joystick. Pushing the stick up (negative screen Y) moves forward.
  let f=(keys.w?1:0)-(keys.s?1:0)-jy;
  let st=(keys.d?1:0)-(keys.a?1:0)+jx;
- const l=Math.hypot(f,st);if(l>1){f/=l;st/=l}
- const speed=running?14:(crouched?5:9);
- const fx=Math.sin(yaw),fz=Math.cos(yaw);
- const rx=Math.cos(yaw),rz=-Math.sin(yaw);
- px+=(fx*f+rx*st)*speed*dt;
- pz+=(fz*f+rz*st)*speed*dt;
- px=Math.max(-235,Math.min(235,px));pz=Math.max(-235,Math.min(235,pz));
+ const len=Math.hypot(f,st);
+ if(len>1){f/=len;st/=len}
+ const speed=running?15:(crouched?5:9);
+ const fx=Math.sin(yaw),fz=Math.cos(yaw),rx=Math.cos(yaw),rz=-Math.sin(yaw);
+ const dx=(fx*f+rx*st)*speed*dt;
+ const dz=(fz*f+rz*st)*speed*dt;
+ px=Math.max(-235,Math.min(235,px+dx));
+ pz=Math.max(-235,Math.min(235,pz+dz));
  vy-=18*dt;py+=vy*dt;
  if(py<=0){py=0;vy=0;grounded=true}
+ const pos=document.getElementById("pos");
+ if(pos)pos.textContent=`POS ${Math.round(px)},${Math.round(pz)}${(Math.abs(f)+Math.abs(st))>.05?" • MOVING":""}`;
 }
-function frame(){
- if(started)update(Math.min(.04,(performance.now()-frame.last)/1000));
- frame.last=performance.now();
- ctx.clearRect(0,0,W,H);
- ctx.fillStyle="#78a8c2";ctx.fillRect(0,0,W,H);
- drawWorld();
- drawPlayer();
- requestAnimationFrame(frame);
+function render(){
+ const d=Math.min(2,devicePixelRatio||1);
+ canvas.width=innerWidth*d;canvas.height=innerHeight*d;
+ gl.viewport(0,0,canvas.width,canvas.height);
+ gl.enable(gl.DEPTH_TEST);
+ gl.clearColor(.47,.66,.75,1);
+ gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+
+ const aspect=canvas.width/canvas.height;
+ const target=[px,py+1.45,pz];
+ const dist=7.8,hor=Math.cos(pitch)*dist;
+ const eye=[px-Math.sin(yaw)*hor,target[1]+Math.sin(pitch)*dist,pz-Math.cos(yaw)*hor];
+ VP=mul(perspective(1.03,aspect,.1,700),camera(eye,target));
+ gl.uniform3f(uLight,-.5,1,.35);
+
+ for(const o of world)part(o.g,o.x,o.y,o.z,o.sx,o.sy,o.sz,o.c,o.r);
+ target();
+ player();
 }
-frame.last=performance.now();requestAnimationFrame(frame);
+let last=performance.now();
+function loop(now){
+ const dt=Math.min(.04,(now-last)/1000);last=now;
+ if(started)update(dt);
+ render();
+ requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
 })();
 </script>
 </body>
